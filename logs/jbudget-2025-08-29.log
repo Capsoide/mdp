@@ -1,0 +1,9 @@
+2025-08-29 18:48:36 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23505, SQLState: 23505
+2025-08-29 18:48:36 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Unique index or primary key violation: "PUBLIC.UKR77VRWPUSUIIF6BANGLRYH7RQ_INDEX_3 ON PUBLIC.BUDGETS(PERIOD_ID NULLS FIRST, CATEGORY_ID NULLS FIRST) VALUES ( /* key:13 */ CAST(4 AS BIGINT), CAST(6 AS BIGINT))"; SQL statement:
+insert into budgets (id, active, actualExpenses, actualIncome, category_id, createdAt, notes, period_id, plannedExpenses, plannedIncome, updatedAt) values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [23505-214]
+2025-08-29 18:49:28 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23505, SQLState: 23505
+2025-08-29 18:49:28 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Unique index or primary key violation: "PUBLIC.UKR77VRWPUSUIIF6BANGLRYH7RQ_INDEX_3 ON PUBLIC.BUDGETS(PERIOD_ID NULLS FIRST, CATEGORY_ID NULLS FIRST) VALUES ( /* key:13 */ CAST(4 AS BIGINT), CAST(6 AS BIGINT))"; SQL statement:
+insert into budgets (id, active, actualExpenses, actualIncome, category_id, createdAt, notes, period_id, plannedExpenses, plannedIncome, updatedAt) values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [23505-214]
+2025-08-29 18:50:01 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23505, SQLState: 23505
+2025-08-29 18:50:01 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Unique index or primary key violation: "PUBLIC.UKR77VRWPUSUIIF6BANGLRYH7RQ_INDEX_3 ON PUBLIC.BUDGETS(PERIOD_ID NULLS FIRST, CATEGORY_ID NULLS FIRST) VALUES ( /* key:13 */ CAST(4 AS BIGINT), CAST(6 AS BIGINT))"; SQL statement:
+insert into budgets (id, active, actualExpenses, actualIncome, category_id, createdAt, notes, period_id, plannedExpenses, plannedIncome, updatedAt) values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [23505-214]

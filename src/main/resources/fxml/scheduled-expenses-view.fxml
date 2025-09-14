@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- Panel sinistro - Quick Actions -->
+    <VBox prefWidth="350" style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-width: 0 1 0 0;">
+        <padding><Insets bottom="15" left="15" right="15" top="15"/></padding>
+
+        <!-- Statistiche rapide -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8;">
+            <Label text="Statistiche" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Totale attivo:"/>
+                <Label fx:id="totalExpensesLabel" text="€ 0,00" style="-fx-font-weight: bold; -fx-text-fill: #2196f3;"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Scadute:"/>
+                <Label fx:id="overdueCountLabel" text="0" style="-fx-font-weight: bold; -fx-text-fill: #f44336;"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Oggi:"/>
+                <Label fx:id="dueTodayCountLabel" text="0" style="-fx-font-weight: bold; -fx-text-fill: #ff9800;"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Questa settimana:"/>
+                <Label fx:id="dueThisWeekCountLabel" text="0" style="-fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+
+        <!-- Spese scadute -->
+        <VBox spacing="5" style="-fx-background-color: #ffebee; -fx-padding: 10; -fx-background-radius: 8;">
+            <Label text="Spese Scadute" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #d32f2f;"/>
+            <ScrollPane prefHeight="100" style="-fx-background-color: transparent;">
+                <VBox fx:id="overdueExpensesBox" spacing="3"/>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Spese oggi -->
+        <VBox spacing="5" style="-fx-background-color: #fff3e0; -fx-padding: 10; -fx-background-radius: 8;">
+            <Label text="In Scadenza Oggi" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #f57c00;"/>
+            <ScrollPane prefHeight="80" style="-fx-background-color: transparent;">
+                <VBox fx:id="dueTodayBox" spacing="3"/>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Spese settimana -->
+        <VBox spacing="5" style="-fx-background-color: #e8f5e8; -fx-padding: 10; -fx-background-radius: 8;" VBox.vgrow="ALWAYS">
+            <Label text="Prossima Settimana" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #388e3c;"/>
+            <ScrollPane style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                <VBox fx:id="dueThisWeekBox" spacing="2"/>
+            </ScrollPane>
+        </VBox>
+
+    </VBox>
+
+    <!-- Panel destro - Tabella principale -->
+    <VBox HBox.hgrow="ALWAYS">
+
+        <!-- Filtri e controlli -->
+        <HBox spacing="10" style="-fx-padding: 10; -fx-background-color: #f5f5f5;">
+            <ComboBox fx:id="statusFilter" prefWidth="120"/>
+            <ComboBox fx:id="recurrenceFilter" prefWidth="130"/>
+            <DatePicker fx:id="dueDateFilter" prefWidth="120"/>
+            <Button fx:id="filterButton" text="Filtra"/>
+            <Button fx:id="clearFilterButton" text="Pulisci"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button fx:id="addExpenseButton" text="Nuova Spesa" style="-fx-background-color: #4caf50; -fx-text-fill: white;"/>
+            <Button fx:id="refreshButton" text="↻"/>
+        </HBox>
+
+        <!-- Tabella spese programmate -->
+        <TableView fx:id="scheduledExpensesTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="descriptionColumn" text="Descrizione" prefWidth="200"/>
+                <TableColumn fx:id="amountColumn" text="Importo" prefWidth="90"/>
+                <TableColumn fx:id="dueDateColumn" text="Scadenza" prefWidth="100"/>
+                <TableColumn fx:id="recurrenceColumn" text="Ricorrenza" prefWidth="120"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                <TableColumn fx:id="daysLeftColumn" text="Giorni" prefWidth="80"/>
+            </columns>
+        </TableView>
+
+        <!-- Azioni -->
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Button fx:id="editExpenseButton" text="Modifica"/>
+            <Button fx:id="deleteExpenseButton" text="Elimina" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+            <Separator orientation="VERTICAL"/>
+            <Button fx:id="completeExpenseButton" text="Completa" style="-fx-background-color: #4caf50; -fx-text-fill: white;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button fx:id="exportButton" text="Esporta"/>
+        </HBox>
+
+    </VBox>
+
+</HBox>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.mpgc.jbudget122631.presentation.controller.MainController">
+    <top>
+        <VBox>
+            <MenuBar fx:id="menuBar">
+                <!-- Menu items will be populated by controller -->
+            </MenuBar>
+            <ToolBar>
+                <Button text="Nuovo Movimento" onAction="#showNewMovementDialog"/>
+                <Button text="Nuovo Budget" onAction="#showNewBudgetDialog"/>
+                <Separator orientation="VERTICAL"/>
+                <Button text="Scadenzario" onAction="#showScheduledExpensesTab"/>
+            </ToolBar>
+        </VBox>
+    </top>
+
+    <center>
+        <TabPane fx:id="contentTabPane" tabClosingPolicy="SELECTED_TAB">
+            <!-- Tabs will be populated dynamically -->
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox style="-fx-padding: 5;">
+            <!-- Sinistra -->
+            <Label text="JBudget v1.0" style="-fx-font-size: 10;"/>
+
+            <!-- Centro (espande per riempire lo spazio) -->
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Concept &amp; Design by Nicola Capancioni" style="-fx-font-size: 10;" HBox.hgrow="NEVER"/>
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Destra -->
+            <Label text=" Made with ♥ for UNICAM" style="-fx-font-size: 10;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

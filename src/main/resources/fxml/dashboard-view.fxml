@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fitToWidth="true" fitToHeight="true">
+    <VBox spacing="20" style="-fx-padding: 20;" VBox.vgrow="ALWAYS">
+
+        <!-- Period Selector -->
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-background-color: #f5f5f5; -fx-background-radius: 5;">
+            <Label text="Periodo di analisi:" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="periodSelectorCombo" prefWidth="200"/>
+            <Button fx:id="refreshButton" text="Aggiorna" style="-fx-background-color: #4caf50; -fx-text-fill: white;"/>
+        </HBox>
+
+        <!-- Summary Cards -->
+        <HBox spacing="20">
+            <VBox alignment="CENTER" style="-fx-background-color: #e3f2fd; -fx-padding: 20; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Label text="Entrate Totali" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <Label fx:id="totalIncomeLabel" text="€ 0,00" style="-fx-font-size: 24; -fx-text-fill: green;"/>
+            </VBox>
+
+            <VBox alignment="CENTER" style="-fx-background-color: #ffebee; -fx-padding: 20; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Label text="Spese Totali" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <Label fx:id="totalExpensesLabel" text="€ 0,00" style="-fx-font-size: 24; -fx-text-fill: red;"/>
+            </VBox>
+
+            <VBox alignment="CENTER" style="-fx-background-color: #f3e5f5; -fx-padding: 20; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Label text="Bilancio" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <Label fx:id="balanceLabel" text="€ 0,00" style="-fx-font-size: 24;"/>
+            </VBox>
+
+            <VBox alignment="CENTER" style="-fx-background-color: #fff3e0; -fx-padding: 20; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+                <Label text="Spese Scadute" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <Label fx:id="overdueExpensesLabel" text="0" style="-fx-font-size: 24; -fx-text-fill: orange;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Charts Section - MODIFICATO PER RESPONSIVE -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+            <!-- Expenses by Category Chart -->
+            <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <Label text="Spese per Categoria" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <PieChart fx:id="expensesByCategoryChart" VBox.vgrow="ALWAYS" minHeight="300" maxHeight="600"/>
+            </VBox>
+
+            <!-- Monthly Trend Chart -->
+            <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <Label text="Trend Mensile" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <LineChart fx:id="monthlyTrendChart" VBox.vgrow="ALWAYS" minHeight="300" maxHeight="600">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </LineChart>
+            </VBox>
+        </HBox>
+
+        <!-- Bottom Section -->
+        <HBox spacing="20">
+            <!-- Upcoming Expenses -->
+            <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #fafafa; -fx-padding: 15; -fx-background-radius: 5;">
+                <Label text="Spese in Scadenza" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <VBox fx:id="upcomingExpensesBox" spacing="5"/>
+            </VBox>
+
+            <!-- Recent Movements -->
+            <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #fafafa; -fx-padding: 15; -fx-background-radius: 5;">
+                <Label text="Movimenti Recenti" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <VBox fx:id="recentMovementsBox" spacing="5"/>
+            </VBox>
+        </HBox>
+
+    </VBox>
+</ScrollPane>
