@@ -58,7 +58,6 @@ La classe di utilità `Executors` fornisce **metodi factory** per creare facilme
 static ExecutorService newCachedThreadPool()
 static ExecutorService newFixedThreadPool(int nThreads)
 static ExecutorService newSingleThreadExecutor()
-static ExecutorService newWorkStealingPool()
 ```
 
 #### newCachedThreadPool
@@ -200,3 +199,4 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
