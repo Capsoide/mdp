@@ -16,6 +16,8 @@ Ogni processo ha il proprio spazio di indirizzi, memoria e risorse assegnate, re
 ### **Introduzione**
 La programmazione concorrente in Java si riferisce alla scrittura di programmi che possono eseguire **più attività in parallelo**. Questo approccio è particolarmente utile per sfruttare sistemi multi-core e migliorare le prestazioni del software, consentendo a più thread di eseguire operazioni simultaneamente.
 
+### **Computazione Asincrona
+
 Il primo passo nello sviluppo concorrente consiste nel suddividere le attività in *task*.
 ### **Runnable**
 L'interfaccia funzionale `Runnable` viene utilizzata per descrivere un task da eseguire (anche in concomitanza con altri task):
@@ -28,82 +30,6 @@ Il metodo `run()` contiene il codice da eseguire e può essere lanciato in due m
 - creando e gestendo manualmente un thread;
 - tramite un **executor**, che si occupa dell'esecuzione dei task in modo astratto senza gestire direttamente i thread
 
-### **Callable**
-L’interfaccia funzionale `Callable<V>` viene utilizzata per rappresentare una computazione che restituisce un risultato e può sollevare un’eccezione.
-A differenza di `Runnable`, che rappresenta un’attività senza valore di ritorno e senza gestione diretta delle eccezioni, `Callable` permette di eseguire un’operazione che produce un risultato e può generare eccezioni controllate.
-
-L'interfaccia `Callable` implementa un solo metodo `call()` che rappresenta il punto d'ingresso della computazione, restituisce un risultato di tipo generico `V`.
-```java
-public interface Callable<V> {
-	V call() throws Exception;
-}
-```
-Tramite l' `ExecutorService` possiamo inviare un ogetto Callable. Il risultato dell'operazione è di tipo **Future**, ovvero un oggetto che rappresenterà il risultato dell'esecuzione in un qualsiasi tempo futuro. 
-E' lo strumento che viene utilizzato per fare interagire chi chiama il servizio con il thread che si occupa di eseguire il servizio.
-Esempio:
-```java
-//creazione di un ExecutorService (in questo caso, un pool di thread fisso)
-ExecutorService executorService = Executor.newFixedthreadPool(1)
-
-//creazione dell'istanza callable
-Callable<String> myCallable = () -> { //simulo un'attività che restituisce una stringa dopo un x di secondi
-	Thread.sleep(2000);
-	return "Task completato!";
-};
-
-//sottomissione di Callable al pool di thread e ottenere un future per il risultato
-Future<String> futureResult = executor.Service.submit(myCallable); //il metodo submit() invia un Callable per essere eseguito
-
-//attendo il risultato e lo stampo
-String result = futureresult.get();
-System.out.println(result)
-```
-Quindi ogni volta che si invia un **Callable** con **submit()**, il metodo restituisce un **Future<V>**, dove V è il tipo di ritorno del `call()`.
-**Future** permette di:
-- recuperare il risultato (`get()`)
-- controllare se è finito (`isDone()`)
-- annullarlo (`cancel()`)
-- gestire eventuali eccezioni (`ExecutionException`)
-
-### **Future**
-L’interfaccia funzionale `Future` rappresenta il **risultato** di un'operazione asincrona. 
-L'oggetto Future è "un contenitore" per un valore che non è ancora disponibile.
-Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato quando è disponibile.
-
-| Metodo | Eccezioni lanciate | Descrizione |
-|---------|--------------------|--------------|
-| `V get()` | `InterruptedException`, `ExecutionException` | Restituisce il valore quando disponibile, altrimenti viene lanciata un’eccezione. Blocca il thread chiamante fino a quando il risultato non è pronto. |
-| `V get(long timeout, TimeUnit unit)` | `InterruptedException`, `ExecutionException`, `TimeoutException` | Restituisce il risultato dell'operazione quando è disponibile, aspettando al massimo il tempo specificato. Il thread chiamante viene bloccato fino a quando il risultato non è pronto o scade il timeout. |
-| `boolean cancel(boolean mayInterruptIfRunning)` | — | Cerca di annullare l'operazione associata all'oggetto Future. Se l'operazione non è ancora iniziata, può essere annullata. Se è già in corso, il comportamento dipende dal valore di `mayInterruptIfRunning`. Se `mayInterruptIfRunning` è true, il thread in esecuzione può essere interrotto. Restituisce true se l'operazione è stata annullata con successo. |
-| `boolean isCancelled()` | — | Verifica se l’operazione sia stata cancellata o meno. |
-| `boolean isDone()` | — | Verifica se l’operazione sia stata terminata o meno, indipendentemente che sia stata completata normalmente o annullata. |
-
-### **Esecuzione multipla**
-Se è necessario aspettare i risultati di più task, il metodo `invokeAll`, che prende una collezione di Callable, può essere utilizzato:
-```java
-List<Callable<V>> tasks = ...
-List<Future<V>> results = executor.invokeAll(tasks);
-L'esecuzione del thread corrente è bloccata fino a quando tutti i task non sono terminati (con successo o meno).
-```
-Un'altra opzione che è possibile usare quando bisogna lavorare su più task è `invokeAny`. In questo caso viene restituito il risultato del primo task (terminato con successo); mentre gli altri compiti vengono cancellati.
-
-### **CompletableFuture**
-
-FINIRE COMPLETABLEFUTURE
-
-_________________________________________________________
-_________________________________________________________
-_________________________________________________________
-
-| Runnable | Callable | Future | CompletableFuture |
-|:---------|:----------|:--------|:------------------|
-| Rappresenta un **task senza valore di ritorno** | Rappresenta un **task che restituisce un risultato** | Rappresenta il **risultato futuro** di un task asincrono | È una **versione avanzata di Future** che permette operazioni asincrone e composte |
-| Definisce solo il metodo `run()` | Definisce il metodo `call()` che restituisce un valore | Restituito da `ExecutorService.submit()` | Permette di concatenare operazioni con metodi come `thenApply()`, `thenRun()`, ecc. |
-| Non restituisce valori e **non gestisce eccezioni** | Restituisce un valore e **può sollevare eccezioni** | Permette di **controllare, attendere e ottenere** il risultato | Gestisce i risultati e le eccezioni **in modo fluido e non bloccante** |
-| Eseguito tramite `executor.execute()` | Eseguito tramite `executor.submit()` | Usa metodi come `get()` e `isDone()` | Usa metodi come `supplyAsync()`, `thenAccept()`, `exceptionally()` |
-
-
-### ***java.util.concurrent***
 #### **Executor**
 **Executor** è un'interfaccia base nel package `java.util.concurrent` che gestisce l'esecuzione dei task senza richiedere la creazione o la gestione manuale dei thread.
 
@@ -275,6 +201,82 @@ T3> 3
 T3> 4
 ```
 
+
+### **Callable**
+L’interfaccia funzionale `Callable<V>` viene utilizzata per rappresentare una computazione che restituisce un risultato e può sollevare un’eccezione.
+A differenza di `Runnable`, che rappresenta un’attività senza valore di ritorno e senza gestione diretta delle eccezioni, `Callable` permette di eseguire un’operazione che produce un risultato e può generare eccezioni controllate.
+
+L'interfaccia `Callable` implementa un solo metodo `call()` che rappresenta il punto d'ingresso della computazione, restituisce un risultato di tipo generico `V`.
+```java
+public interface Callable<V> {
+	V call() throws Exception;
+}
+```
+Tramite l' `ExecutorService` possiamo inviare un ogetto Callable. Il risultato dell'operazione è di tipo **Future**, ovvero un oggetto che rappresenterà il risultato dell'esecuzione in un qualsiasi tempo futuro. 
+E' lo strumento che viene utilizzato per fare interagire chi chiama il servizio con il thread che si occupa di eseguire il servizio.
+Esempio:
+```java
+//creazione di un ExecutorService (in questo caso, un pool di thread fisso)
+ExecutorService executorService = Executor.newFixedthreadPool(1)
+
+//creazione dell'istanza callable
+Callable<String> myCallable = () -> { //simulo un'attività che restituisce una stringa dopo un x di secondi
+	Thread.sleep(2000);
+	return "Task completato!";
+};
+
+//sottomissione di Callable al pool di thread e ottenere un future per il risultato
+Future<String> futureResult = executor.Service.submit(myCallable); //il metodo submit() invia un Callable per essere eseguito
+
+//attendo il risultato e lo stampo
+String result = futureresult.get();
+System.out.println(result)
+```
+Quindi ogni volta che si invia un **Callable** con **submit()**, il metodo restituisce un **Future<V>**, dove V è il tipo di ritorno del `call()`.
+**Future** permette di:
+- recuperare il risultato (`get()`)
+- controllare se è finito (`isDone()`)
+- annullarlo (`cancel()`)
+- gestire eventuali eccezioni (`ExecutionException`)
+
+### **Future**
+L’interfaccia funzionale `Future` rappresenta il **risultato** di un'operazione asincrona. 
+L'oggetto Future è "un contenitore" per un valore che non è ancora disponibile.
+Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato quando è disponibile.
+
+| Metodo | Eccezioni lanciate | Descrizione |
+|---------|--------------------|--------------|
+| `V get()` | `InterruptedException`, `ExecutionException` | Restituisce il valore quando disponibile, altrimenti viene lanciata un’eccezione. Blocca il thread chiamante fino a quando il risultato non è pronto. |
+| `V get(long timeout, TimeUnit unit)` | `InterruptedException`, `ExecutionException`, `TimeoutException` | Restituisce il risultato dell'operazione quando è disponibile, aspettando al massimo il tempo specificato. Il thread chiamante viene bloccato fino a quando il risultato non è pronto o scade il timeout. |
+| `boolean cancel(boolean mayInterruptIfRunning)` | — | Cerca di annullare l'operazione associata all'oggetto Future. Se l'operazione non è ancora iniziata, può essere annullata. Se è già in corso, il comportamento dipende dal valore di `mayInterruptIfRunning`. Se `mayInterruptIfRunning` è true, il thread in esecuzione può essere interrotto. Restituisce true se l'operazione è stata annullata con successo. |
+| `boolean isCancelled()` | — | Verifica se l’operazione sia stata cancellata o meno. |
+| `boolean isDone()` | — | Verifica se l’operazione sia stata terminata o meno, indipendentemente che sia stata completata normalmente o annullata. |
+
+### **Esecuzione multipla**
+Se è necessario aspettare i risultati di più task, il metodo `invokeAll`, che prende una collezione di Callable, può essere utilizzato:
+```java
+List<Callable<V>> tasks = ...
+List<Future<V>> results = executor.invokeAll(tasks);
+L'esecuzione del thread corrente è bloccata fino a quando tutti i task non sono terminati (con successo o meno).
+```
+Un'altra opzione che è possibile usare quando bisogna lavorare su più task è `invokeAny`. In questo caso viene restituito il risultato del primo task (terminato con successo); mentre gli altri compiti vengono cancellati.
+
+### **CompletableFuture**
+
+FINIRE COMPLETABLEFUTURE
+
+_________________________________________________________
+_________________________________________________________
+_________________________________________________________
+
+| Runnable | Callable | Future | CompletableFuture |
+|:---------|:----------|:--------|:------------------|
+| Rappresenta un **task senza valore di ritorno** | Rappresenta un **task che restituisce un risultato** | Rappresenta il **risultato futuro** di un task asincrono | È una **versione avanzata di Future** che permette operazioni asincrone e composte |
+| Definisce solo il metodo `run()` | Definisce il metodo `call()` che restituisce un valore | Restituito da `ExecutorService.submit()` | Permette di concatenare operazioni con metodi come `thenApply()`, `thenRun()`, ecc. |
+| Non restituisce valori e **non gestisce eccezioni** | Restituisce un valore e **può sollevare eccezioni** | Permette di **controllare, attendere e ottenere** il risultato | Gestisce i risultati e le eccezioni **in modo fluido e non bloccante** |
+| Eseguito tramite `executor.execute()` | Eseguito tramite `executor.submit()` | Usa metodi come `get()` e `isDone()` | Usa metodi come `supplyAsync()`, `thenAccept()`, `exceptionally()` |
+
+
 ### **Visibilità**
 La **visibilità** nei thread indica la capacità di un thread di vedere le modifiche apportate da un altro thread alle variabili condivise.
 In Java, a causa delle ottimizzazioni della CPU e della cache, un thread potrebbe lavorare su una copia locale di una variabile, senza vedere gli aggiornamenti effettuati da altri thread. Quindi i thread lavorano su memorie separate.
@@ -304,6 +306,7 @@ public static void main(String[] argv) {
 	executor.execute(goodbyes);
 }
 ```
+
 
 
 
