@@ -65,7 +65,7 @@ Quindi ogni volta che si invia un **Callable** con **submit()**, il metodo resti
 - annullarlo (`cancel()`)
 - gestire eventuali eccezioni (`ExecutionException`)
 
-## **Future**
+### **Future**
 L’interfaccia funzionale `Future` rappresenta il **risultato** di un'operazione asincrona. 
 L'oggetto Future è "un contenitore" per un valore che non è ancora disponibile.
 Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato quando è disponibile.
@@ -78,7 +78,7 @@ Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato
 | `boolean isCancelled()` | — | Verifica se l’operazione sia stata cancellata o meno. |
 | `boolean isDone()` | — | Verifica se l’operazione sia stata terminata o meno, indipendentemente che sia stata completata normalmente o annullata. |
 
-## **Esecuzione multipla**
+### **Esecuzione multipla**
 Se è necessario aspettare i risultati di più task, il metodo `invokeAll`, che prende una collezione di Callable, può essere utilizzato:
 ```java
 List<Callable<V>> tasks = ...
@@ -87,7 +87,7 @@ L'esecuzione del thread corrente è bloccata fino a quando tutti i task non sono
 ```
 Un'altra opzione che è possibile usare quando bisogna lavorare su più task è `invokeAny`. In questo caso viene restituito il risultato del primo task (terminato con successo); mentre gli altri compiti vengono cancellati.
 
-## **CompletableFuture
+### **CompletableFuture
 
 FINIRE COMPLETABLEFUTURE
 
@@ -270,6 +270,7 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
 
