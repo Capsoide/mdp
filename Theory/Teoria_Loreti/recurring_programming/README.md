@@ -5,7 +5,7 @@
 Consentono l'esecuzione simultanea di più attività all'interno di un singolo processo. 
 I thread all'interno dello stesso processo condividono lo stesso contesto, compreso lo spazio di indirizzi e i descrittori di file.
 
-un *processo* contiene uno o più tread.
+Un *processo* contiene uno o più tread.
 
 **Binari**: sono programmi inattivi che risiedono su un supporto di memorizzazione, compilati in un formato accessibile da un dato sistema operativo e da una determinata architettura, pronti per essere eseguiti.
 
@@ -199,5 +199,6 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
