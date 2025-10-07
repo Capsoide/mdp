@@ -53,6 +53,7 @@ migliorando così l’efficienza e le prestazioni del programma.
 ```
 
 La classe di utilità `Executors` fornisce **metodi factory** per creare facilmente diverse tipologie di `ExecutorService`:
+
 ```java
 static ExecutorService newCachedThreadPool()
 static ExecutorService newFixedThreadPool(int nThreads)
@@ -124,4 +125,39 @@ T3> 8
 T2> 9
 T3> 9
 ```
-(l'ordine di esecuzione non è noto/garantito, i task partono praticamente tutti insieme su thread diversi).
+L'ordine di esecuzione non è noto/garantito, i task partono praticamente tutti insieme su thread diversi.
+
+#### newFixedThreadPool
+
+`newFixedThreadPool` è un **metodo factory** della classe `Executors` che crea un `ExecutorService` con un **numero fisso di thread**.
+
+Con `newFixedThreadPool(int nThreads)` vengono creati al massimo `nThreads` thread 
+- se ci sono più task di quelli che i thread possono gestire contemporaneamente, i task **vengono messi in cods** e **eseguiti appena un thread si libera**;
+- i thread dei pool **rimangono attivi e vengono riutilizzati** per eseguire nuovi task, evitando il costo di creazione continua di nuovi thread.
+
+Esempio:
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Main {
+
+    public static Runnable getTask(String name, int counter) {
+        return () -> {
+            for (int i = 0; i < counter; i++) {
+                System.out.println(name + "> " + i);
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedthreadPool(2); <--
+        executor.execute(getTask("T1", 10));
+        executor.execute(getTask("T2", 10));
+        executor.execute(getTask("T3", 10));
+        executor.shutdown(); // Chiude l'executor dopo aver completato i task
+    }
+}
+```
+In questo caso vengono eseguiti **solo due thread alla volta** (T1 e T2), e solo quando uno dei due termina viene avviato T3.
+I task vengono eseguiti sequenzialmente `T1 → T2 → T3`
