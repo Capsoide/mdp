@@ -82,9 +82,9 @@ public class Main {
 
     public static void main(String[] args) {
         ExecutorService executor = Executors.newCachedThreadPool();
-        executor.execute(getTask("T1", 10));
-        executor.execute(getTask("T2", 10));
-        executor.execute(getTask("T3", 10));
+        executor.execute(getTask("T1", 5));
+        executor.execute(getTask("T2", 5));
+        executor.execute(getTask("T3", 5));
         executor.shutdown(); // Chiude l'executor dopo aver completato i task
     }
 }
@@ -94,36 +94,22 @@ In questo esempio, le esecuzioni dei tre task (T1, T2, T3) si intervallano dinam
 
 Output:
 ```java
-T3> 0
 T1> 0
-T1> 1
-T1> 2
-T1> 3
-T1> 4
-T1> 5
-T1> 6
-T1> 7
-T1> 8
-T1> 9
 T2> 0
-T2> 1
+T3> 0
+T1> 1
 T3> 1
+T2> 1
+T1> 2
 T2> 2
-T2> 3
-T2> 4
-T2> 5
-T2> 6
-T2> 7
-T2> 8
 T3> 2
 T3> 3
+T1> 3
+T2> 3
+T1> 4
+T2> 4
 T3> 4
-T3> 5
-T3> 6
-T3> 7
-T3> 8
-T2> 9
-T3> 9
+
 ```
 L'ordine di esecuzione non è noto/garantito, i task partono praticamente tutti insieme su thread diversi.
 
@@ -151,13 +137,66 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedthreadPool(2); <--
-        executor.execute(getTask("T1", 10));
-        executor.execute(getTask("T2", 10));
-        executor.execute(getTask("T3", 10));
+        ExecutorService executor = Executors.newFixedThreadPool(2); <--
+        executor.execute(getTask("T1", 5));
+        executor.execute(getTask("T2", 5));
+        executor.execute(getTask("T3", 5));
         executor.shutdown(); // Chiude l'executor dopo aver completato i task
     }
 }
 ```
 In questo caso vengono eseguiti **solo due thread alla volta** (T1 e T2), e solo quando uno dei due termina viene avviato T3.
-I task vengono eseguiti sequenzialmente `T1 → T2 → T3`
+I task vengono eseguiti sequenzialmente `T1 → T2 → T3` (si intervallano solo due esecuzioni T1 e T2 e quando uno dei due termina parte T3).
+
+Output:
+```java
+T2> 0
+T2> 1
+T2> 2
+T2> 3
+T2> 4
+T1> 0
+T1> 1
+T1> 2
+T1> 3
+T3> 0
+T3> 1
+T3> 2
+T3> 3
+T3> 4
+T1> 4
+```
+Comportamento:
+- Il pool ha 2 thread disponibili, quindi T1 e T2 partono insieme.
+- Appena T2 finisce, il thread che lo eseguiva viene **riutilizzato** per fare partire T3.
+- T1 **non è ancora terminato**, qundi continua in parallelo con T3.
+- Alla fine terminano entrambi (T3 poi T1).
+
+  #### newSingleThreadExecutor()
+
+`newSingleThreadExecutor` è un **metodo factory** della classe `Executors` che crea un `ExecutorService` con **un solo thread**.
+
+I task vengono eseguiti **uno alla volta**, in ordine di invio (FIFO), e non c'è esecuzione parallela: **il successivo inizia solo dopo che il precedente è terminato**.
+```java
+ExecutorService executor = Executors.newSingleThreadExecutor();
+```
+Viene eseguito 1 thread alla volta: T1 -> T2 -> T3
+
+Output:
+```java
+T1> 0
+T1> 1
+T1> 2
+T1> 3
+T1> 4
+T2> 0
+T2> 1
+T2> 2
+T2> 3
+T2> 4
+T3> 0
+T3> 1
+T3> 2
+T3> 3
+T3> 4
+```
