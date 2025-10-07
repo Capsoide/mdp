@@ -70,13 +70,14 @@ L’interfaccia funzionale `Future` rappresenta il **risultato** di un'operazion
 L'oggetto Future è "un contenitore" per un valore che non è ancora disponibile.
 Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato quando è disponibile.
 
-| Metodo | Descrizione | Eccezioni lanciate | Blocco del thread |
-|---------|--------------|--------------------|--------------------|
-| `V get()` | Restituisce il risultato della computazione quando disponibile. Se il risultato non è pronto, il thread chiamante viene bloccato finché non lo è. | `InterruptedException`, `ExecutionException` | ✅ Sì |
-| `V get(long timeout, TimeUnit unit)` | Come `get()`, ma attende solo fino al tempo massimo specificato. Se il tempo scade, viene lanciata una `TimeoutException`. | `InterruptedException`, `ExecutionException`, `TimeoutException` | ⚠️ Sì (fino al timeout) |
-| `boolean cancel(boolean mayInterruptIfRunning)` | Tenta di annullare l'esecuzione del task. Se non è iniziato, viene annullato; se è in corso, il comportamento dipende dal parametro `mayInterruptIfRunning`. | — | ❌ No |
-| `boolean isCancelled()` | Verifica se il task è stato annullato prima del completamento. | — | ❌ No |
-| `boolean isDone()` | Verifica se il task è terminato, indipendentemente dal successo, fallimento o annullamento. | — | ❌ No |
+| Metodo | Eccezioni lanciate | Descrizione |
+|---------|--------------------|--------------|
+| `V get()` | `InterruptedException`, `ExecutionException` | Restituisce il valore quando disponibile, altrimenti viene lanciata un’eccezione. Blocca il thread chiamante fino a quando il risultato non è pronto. |
+| `V get(long timeout, TimeUnit unit)` | `InterruptedException`, `ExecutionException`, `TimeoutException` | Restituisce il risultato dell'operazione quando è disponibile, aspettando al massimo il tempo specificato. Il thread chiamante viene bloccato fino a quando il risultato non è pronto o scade il timeout. |
+| `boolean cancel(boolean mayInterruptIfRunning)` | — | Cerca di annullare l'operazione associata all'oggetto Future. Se l'operazione non è ancora iniziata, può essere annullata. Se è già in corso, il comportamento dipende dal valore di `mayInterruptIfRunning`. Se `mayInterruptIfRunning` è true, il thread in esecuzione può essere interrotto. Restituisce true se l'operazione è stata annullata con successo. |
+| `boolean isCancelled()` | — | Verifica se l’operazione sia stata cancellata o meno. |
+| `boolean isDone()` | — | Verifica se l’operazione sia stata terminata o meno, indipendentemente che sia stata completata normalmente o annullata. |
+
 
 
 
@@ -259,6 +260,7 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
 
