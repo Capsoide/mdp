@@ -16,7 +16,7 @@ Ogni processo ha il proprio spazio di indirizzi, memoria e risorse assegnate, re
 ### **Introduzione**
 La programmazione concorrente in Java si riferisce alla scrittura di programmi che possono eseguire **più attività in parallelo**. Questo approccio è particolarmente utile per sfruttare sistemi multi-core e migliorare le prestazioni del software, consentendo a più thread di eseguire operazioni simultaneamente.
 
-### **Computazione Asincrona
+### **Computazione Asincrona**
 
 Il primo passo nello sviluppo concorrente consiste nel suddividere le attività in *task*.
 ### **Runnable**
@@ -306,6 +306,7 @@ public static void main(String[] argv) {
 	executor.execute(goodbyes);
 }
 ```
+
 
 
 
