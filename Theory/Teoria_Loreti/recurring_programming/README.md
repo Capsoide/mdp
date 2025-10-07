@@ -28,6 +28,26 @@ Il metodo `run()` contiene il codice da eseguire e può essere lanciato in due m
 - creando e gestendo manualmente un thread;
 - tramite un **executor**, che si occupa dell'esecuzione dei task in modo astratto senza gestire direttamente i thread
 
+### **Callable**
+L’interfaccia funzionale `Callable<V>` viene utilizzata per rappresentare una computazione che restituisce un risultato e può sollevare un’eccezione.
+A differenza di `Runnable`, che rappresenta un’attività senza valore di ritorno e senza gestione diretta delle eccezioni, `Callable` permette di eseguire un’operazione che produce un risultato e può generare eccezioni controllate.
+
+L'interfaccia `Callable` implementa un solo metodo `call()` che rappresenta il punto d'ingresso della computazione, restituisce un risultato di tipo generico `V`.
+```java
+public interface Callable<V> {
+	V call() throws Exception;
+}
+```
+
+
+| Runnable | Callable | Future | CompletableFuture |
+|:---------|:----------|:--------|:------------------|
+| Rappresenta un **task senza valore di ritorno** | Rappresenta un **task che restituisce un risultato** | Rappresenta il **risultato futuro** di un task asincrono | È una **versione avanzata di Future** che permette operazioni asincrone e composte |
+| Definisce solo il metodo `run()` | Definisce il metodo `call()` che restituisce un valore | Restituito da `ExecutorService.submit()` | Permette di concatenare operazioni con metodi come `thenApply()`, `thenRun()`, ecc. |
+| Non restituisce valori e **non gestisce eccezioni** | Restituisce un valore e **può sollevare eccezioni** | Permette di **controllare, attendere e ottenere** il risultato | Gestisce i risultati e le eccezioni **in modo fluido e non bloccante** |
+| Eseguito tramite `executor.execute()` | Eseguito tramite `executor.submit()` | Usa metodi come `get()` e `isDone()` | Usa metodi come `supplyAsync()`, `thenAccept()`, `exceptionally()` |
+
+
 ### ***java.util.concurrent***
 #### **Executor**
 **Executor** è un'interfaccia base nel package `java.util.concurrent` che gestisce l'esecuzione dei task senza richiedere la creazione o la gestione manuale dei thread.
@@ -199,6 +219,7 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
 
