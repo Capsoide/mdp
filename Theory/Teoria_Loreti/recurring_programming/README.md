@@ -275,6 +275,38 @@ T3> 3
 T3> 4
 ```
 
+### **Visibilità**
+La **visibilità** nei thread indica la capacità di un thread di vedere le modifiche apportate da un altro thread alle variabili condivise.
+In Java, a causa delle ottimizzazioni della CPU e della cache, un thread potrebbe lavorare su una copia locale di una variabile, senza vedere gli aggiornamenti effettuati da altri thread. Quindi i thread lavorano su memorie separate.
+
+Questo può portare a situazioni in cui i diversi thread operino su copie locali separate dai dati, e ciò può causare problemi di coerenza della memoria.
+
+Per garantire visibilità si usano le variabili `volatile`, `final`, `static`.
+
+Utilizzando `volatile` nella variabile statica `done` facciamo in modo che l'operazione di scrittura venga immediatamente riflessa in tutto il sistema.
+```java
+private static volatile boolean done = false;
+
+public static void main(String[] argv) {
+	Runnable hellos = () -> {
+		for( int i=0 ; i<1000 ; i++ ) {
+			System.out.println("Hello "+i);
+		}
+		done = true;
+	};
+	Runnable goodbyes = () -> {
+		int i=0;
+		while (!done) { i++; }
+		System.out.println("Goodbye "+i);
+	};
+	ExecutorService executor = Executors.newCachedThreadPool();
+	executor.execute(hellos);
+	executor.execute(goodbyes);
+}
+```
+
+
+
 
 
 
