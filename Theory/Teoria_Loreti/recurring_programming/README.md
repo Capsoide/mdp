@@ -38,6 +38,46 @@ public interface Callable<V> {
 	V call() throws Exception;
 }
 ```
+Tramite l' `ExecutorService` possiamo inviare un ogetto Callable. Il risultato dell'operazione è di tipo **Future**, ovvero un oggetto che rappresenterà il risultato dell'esecuzione in un qualsiasi tempo futuro. 
+E' lo strumento che viene utilizzato per fare interagire chi chiama il servizio con il thread che si occupa di eseguire il servizio.
+Esempio:
+```java
+//creazione di un ExecutorService (in questo caso, un pool di thread fisso)
+ExecutorService executorService = Executor.newFixedthreadPool(1)
+
+//creazione dell'istanza callable
+Callable<String> myCallable = () -> { //simulo un'attività che restituisce una stringa dopo un x di secondi
+	Thread.sleep(2000);
+	return "Task completato!";
+};
+
+//sottomissione di Callable al pool di thread e ottenere un future per il risultato
+Future<String> futureResult = executor.Service.submit(myCallable); //il metodo submit() invia un Callable per essere eseguito
+
+//attendo il risultato e lo stampo
+String result = futureresult.get();
+System.out.println(result)
+```
+Quindi ogni volta che si invia un **Callable** con **submit()**, il metodo restituisce un **Future<V>**, dove V è il tipo di ritorno del `call()`.
+**Future** permette di:
+- recuperare il risultato (`get()`)
+- controllare se è finito (`isDone()`)
+- annullarlo (`cancel()`)
+- gestire eventuali eccezioni (`ExecutionException`)
+
+## **Future**
+L’interfaccia funzionale `Future` rappresenta il **risultato** di un'operazione asincrona. 
+L'oggetto Future è "un contenitore" per un valore che non è ancora disponibile.
+Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato quando è disponibile.
+
+| Metodo | Descrizione | Eccezioni lanciate | Blocco del thread |
+|---------|--------------|--------------------|--------------------|
+| `V get()` | Restituisce il risultato della computazione quando disponibile. Se il risultato non è pronto, il thread chiamante viene bloccato finché non lo è. | `InterruptedException`, `ExecutionException` | ✅ Sì |
+| `V get(long timeout, TimeUnit unit)` | Come `get()`, ma attende solo fino al tempo massimo specificato. Se il tempo scade, viene lanciata una `TimeoutException`. | `InterruptedException`, `ExecutionException`, `TimeoutException` | ⚠️ Sì (fino al timeout) |
+| `boolean cancel(boolean mayInterruptIfRunning)` | Tenta di annullare l'esecuzione del task. Se non è iniziato, viene annullato; se è in corso, il comportamento dipende dal parametro `mayInterruptIfRunning`. | — | ❌ No |
+| `boolean isCancelled()` | Verifica se il task è stato annullato prima del completamento. | — | ❌ No |
+| `boolean isDone()` | Verifica se il task è terminato, indipendentemente dal successo, fallimento o annullamento. | — | ❌ No |
+
 
 
 | Runnable | Callable | Future | CompletableFuture |
@@ -219,6 +259,7 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
 
