@@ -171,7 +171,7 @@ Comportamento:
 - T1 **non è ancora terminato**, qundi continua in parallelo con T3.
 - Alla fine terminano entrambi (T3 poi T1).
 
-  #### newSingleThreadExecutor()
+#### newSingleThreadExecutor()
 
 `newSingleThreadExecutor` è un **metodo factory** della classe `Executors` che crea un `ExecutorService` con **un solo thread**.
 
@@ -199,4 +199,5 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
