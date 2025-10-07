@@ -78,8 +78,18 @@ Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato
 | `boolean isCancelled()` | — | Verifica se l’operazione sia stata cancellata o meno. |
 | `boolean isDone()` | — | Verifica se l’operazione sia stata terminata o meno, indipendentemente che sia stata completata normalmente o annullata. |
 
+## **Esecuzione multipla**
+Se è necessario aspettare i risultati di più task, il metodo `invokeAll`, che prende una collezione di Callable, può essere utilizzato:
+```java
+List<Callable<V>> tasks = ...
+List<Future<V>> results = executor.invokeAll(tasks);
+L'esecuzione del thread corrente è bloccata fino a quando tutti i task non sono terminati (con successo o meno).
+```
+Un'altra opzione che è possibile usare quando bisogna lavorare su più task è `invokeAny`. In questo caso viene restituito il risultato del primo task (terminato con successo); mentre gli altri compiti vengono cancellati.
 
+## **CompletableFuture
 
+FINIRE COMPLETABLEFUTURE
 
 | Runnable | Callable | Future | CompletableFuture |
 |:---------|:----------|:--------|:------------------|
@@ -260,6 +270,7 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
 
