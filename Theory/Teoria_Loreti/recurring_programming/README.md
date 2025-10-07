@@ -87,9 +87,13 @@ L'esecuzione del thread corrente è bloccata fino a quando tutti i task non sono
 ```
 Un'altra opzione che è possibile usare quando bisogna lavorare su più task è `invokeAny`. In questo caso viene restituito il risultato del primo task (terminato con successo); mentre gli altri compiti vengono cancellati.
 
-### **CompletableFuture
+### **CompletableFuture**
 
 FINIRE COMPLETABLEFUTURE
+
+_________________________________________________________
+_________________________________________________________
+_________________________________________________________
 
 | Runnable | Callable | Future | CompletableFuture |
 |:---------|:----------|:--------|:------------------|
@@ -270,6 +274,7 @@ T3> 2
 T3> 3
 T3> 4
 ```
+
 
 
 
