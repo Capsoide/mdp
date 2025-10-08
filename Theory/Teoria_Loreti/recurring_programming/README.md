@@ -5,8 +5,6 @@
 Consentono l'esecuzione simultanea di più attività all'interno di un singolo processo. 
 I thread all'interno dello stesso processo condividono lo stesso contesto, compreso lo spazio di indirizzi e i descrittori di file.
 
-Un *processo* contiene uno o più tread.
-
 **Binari**: sono programmi inattivi che risiedono su un supporto di memorizzazione, compilati in un formato accessibile da un dato sistema operativo e da una determinata architettura, pronti per essere eseguiti.
 
 **Processi**: sono l'astrazione del sistema operativo che rappresenta binari in azione (es. il binario caricato, la memoria virtualizzata, le risorse del kernel come i file aperti, un utente associato e così via). 
@@ -306,10 +304,46 @@ public static void main(String[] argv) {
 	executor.execute(goodbyes);
 }
 ```
+### **Sincronizzazione**
+Quando due o più thread tentano di accedere e modificare contemporaneamente la stessa risorsa condivisa, il risultato può essere imprevedibile e non deterministico. Questo può portare ad una **race condition** (condizione di competizione) e a **problemi di sincronizzazione**.
 
+Per evitare le race condition in Java, è importante utilizzare la sincronizzazione dei thread.
+**`Synchronized`** è il meccanismo fondamentale in Java per garantire la **mutua esclusione** a sezioni critiche di codice: **assicura che solo un thread alla volta possa eseguire un blocco di codice sincronizzato**
 
+### **Monitor**
+Nella programmazione concorrente, un **monitor** è un meccanismo di sincronizzazione che gestisce l'accesso concorrente a una risorsa condivisa da parte di più thread.
 
+Fornisce metodi per:
+- **bloccare l'accesso** alla risorsa, permettendo a un solo thread alla volta di accedervi;
+- **gestire l'attesa** dei thread quando la risorsa è già in uso;
 
+In Java, ogni oggetto può fungere da monitor. Il monitor viene implementato attraverso la parola chiave `synchronized`: quando un thread esegue un metodo o blocco sincronizzato, acquisisce il lock del monitor e blocca l'accesso ad altri thread fino al rilascio del lock.
+
+Tutti gli oggetti che implementano `java.lang.Object` forniscono i metodi `wait()`, `notify()` e `notifyAll()`, che permettono la sincronizzazione e comunicazione tra thread.
+
+### **wait()**
+Il metodo `wait()` permette a un thread di:
+- sospendere la propria esecuzione;
+- rilasciare il lock del monitor;
+Oppure permette di rimanere in stato di attesa fino a quando:
+- un altro thread chiama `notify()` o `notifyAll()` sullo stesso oggetto;
+- scade il timeout specificato (se usato `wait(timeout)`.
+
+Quando risvegliato, il thread deve riacquisire il lock prima di continuare.
+
+### **notify()**
+Il metodo `motify()` notifica **un singolo thread** in attesa sul monitor. Il thread notificato viene scelto in modo non deterministico dal sistema. Gli altri thread in attesa rimangono sospesi finchè non vengono notificati o scade il loro timeout.
+
+Il thread che chiama `notify()` **non rilascia immediatamente il lock**: continua l'esecuzione e lo rilascia solo quando esce dal blocco sincronizzato.
+
+### **notifyAll()**
+Il metodo notifyAll() notifica **tutti i thread** in attesa sul monitor. Tutti i thread notificati tentano di acquisire il lock e riprendere l'esecuzione, ma solo uno alla volta può effettivamente procedere.
+
+E' buona pratica **utilizzare sempre** `notifyAll()` **invece di** `notify()`, a meno che non si sappia esattamente quale thread debba essere notificato e si abbia una buona ragione per farlo.
+`notifyAll()` garantisce che tutti i thread in attesa vengono notificati, evitando situazioni in cui:
+- il thread sbagliato viene risvegliato;
+- thread validi rimangono in attesa indefinita (starvation);
+- si verificano deadlock.
 
 
 
