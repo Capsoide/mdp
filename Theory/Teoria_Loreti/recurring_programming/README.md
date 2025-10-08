@@ -14,10 +14,10 @@ Ogni processo ha il proprio spazio di indirizzi, memoria e risorse assegnate, re
 ### **Introduzione**
 La programmazione concorrente in Java si riferisce alla scrittura di programmi che possono eseguire **più attività in parallelo**. Questo approccio è particolarmente utile per sfruttare sistemi multi-core e migliorare le prestazioni del software, consentendo a più thread di eseguire operazioni simultaneamente.
 
-### **Computazione Asincrona**
+### ⚠️**Computazione Asincrona**
 
 Il primo passo nello sviluppo concorrente consiste nel suddividere le attività in *task*.
-#### **Runnable**
+#### ⚠️**Runnable**
 L'interfaccia funzionale `Runnable` viene utilizzata per descrivere un task da eseguire (anche in concomitanza con altri task):
 ```java
 public interface Runnable {
@@ -28,7 +28,7 @@ Il metodo `run()` contiene il codice da eseguire e può essere lanciato in due m
 - creando e gestendo manualmente un thread;
 - tramite un **executor**, che si occupa dell'esecuzione dei task in modo astratto senza gestire direttamente i thread
 
-#### **Executor**
+#### ⚠️**Executor**
 **Executor** è un'interfaccia base nel package `java.util.concurrent` che gestisce l'esecuzione dei task senza richiedere la creazione o la gestione manuale dei thread.
 
 Definisce il metodo:
@@ -37,7 +37,7 @@ void execute(Runnable command);
 ```
 Permette di eseguire un'operazione rappresentata dall'oggetto `Runnable` **senza creare o avviare manualmente i thread**, delegando la gestione (dei thread) all'implementazione dell'interfaccia `Runnable`.
 
-#### **ExecutorService**
+#### ⚠️**ExecutorService**
 **ExecutorService** estende l'interfaccia `Executor`,e fornisce funzionalità più avanzate per la gestione dei task, consentendo di:
 - eseguire **operazioni asincrone**;
 - gestire **un pool di thread** in modo efficente; (*)
@@ -59,7 +59,7 @@ static ExecutorService newFixedThreadPool(int nThreads)
 static ExecutorService newSingleThreadExecutor()
 ```
 
-#### newCachedThreadPool
+#### ⚠️newCachedThreadPool
 `newCachedThreadPool` è un **metodo factory** della classe `Executor` che serve a creare un `ExecutorService`.
 Con `newCachedThreadPool` vengono creati più thread se non ce ne sono disponibili.
 
@@ -111,7 +111,7 @@ T3> 4
 ```
 L'ordine di esecuzione non è noto/garantito, i task partono praticamente tutti insieme su thread diversi.
 
-#### newFixedThreadPool
+#### ⚠️**newFixedThreadPool**
 
 `newFixedThreadPool` è un **metodo factory** della classe `Executors` che crea un `ExecutorService` con un **numero fisso di thread**.
 
@@ -144,7 +144,7 @@ public class Main {
 }
 ```
 In questo caso vengono eseguiti **solo due thread alla volta** (T1 e T2), e solo quando uno dei due termina viene avviato T3.
-I task vengono eseguiti sequenzialmente `T1 → T2 → T3` (si intervallano solo due esecuzioni T1 e T2 e quando uno dei due termina parte T3).
+I task vengono eseguiti sequenzialmente `T1 → T2 → T3`; si intervallano solo due esecuzioni T1 e T2 e quando uno dei due termina parte T3.
 
 Output:
 ```java
@@ -170,7 +170,7 @@ Comportamento:
 - T1 **non è ancora terminato**, qundi continua in parallelo con T3.
 - Alla fine terminano entrambi (T3 poi T1).
 
-#### newSingleThreadExecutor()
+#### ⚠️**newSingleThreadExecutor()**
 
 `newSingleThreadExecutor` è un **metodo factory** della classe `Executors` che crea un `ExecutorService` con **un solo thread**.
 
@@ -200,7 +200,7 @@ T3> 4
 ```
 
 
-### **Callable**
+### ⚠️**Callable**
 L’interfaccia funzionale `Callable<V>` viene utilizzata per rappresentare una computazione che restituisce un risultato e può sollevare un’eccezione.
 A differenza di `Runnable`, che rappresenta un’attività senza valore di ritorno e senza gestione diretta delle eccezioni, `Callable` permette di eseguire un’operazione che produce un risultato e può generare eccezioni controllate.
 
@@ -237,7 +237,7 @@ Quindi ogni volta che si invia un **Callable** con **submit()**, il metodo resti
 - annullarlo (`cancel()`)
 - gestire eventuali eccezioni (`ExecutionException`)
 
-### **Future**
+### ⚠️**Future**
 L’interfaccia funzionale `Future` rappresenta il **risultato** di un'operazione asincrona. 
 L'oggetto Future è "un contenitore" per un valore che non è ancora disponibile.
 Fornisce metodi per controllare lo stato dell'operazione e ottenere il risultato quando è disponibile.
@@ -259,7 +259,7 @@ L'esecuzione del thread corrente è bloccata fino a quando tutti i task non sono
 ```
 Un'altra opzione che è possibile usare quando bisogna lavorare su più task è `invokeAny`. In questo caso viene restituito il risultato del primo task (terminato con successo); mentre gli altri compiti vengono cancellati.
 
-### **CompletableFuture**
+### ⚠️**CompletableFuture**
 
 FINIRE COMPLETABLEFUTURE
 
@@ -275,7 +275,7 @@ _________________________________________________________
 | Eseguito tramite `executor.execute()` | Eseguito tramite `executor.submit()` | Usa metodi come `get()` e `isDone()` | Usa metodi come `supplyAsync()`, `thenAccept()`, `exceptionally()` |
 
 
-### **Visibilità**
+### ⚠️**Visibilità**
 La **visibilità** nei thread indica la capacità di un thread di vedere le modifiche apportate da un altro thread alle variabili condivise.
 In Java, a causa delle ottimizzazioni della CPU e della cache, un thread potrebbe lavorare su una copia locale di una variabile, senza vedere gli aggiornamenti effettuati da altri thread. Quindi i thread lavorano su memorie separate.
 
@@ -304,13 +304,13 @@ public static void main(String[] argv) {
 	executor.execute(goodbyes);
 }
 ```
-### **Sincronizzazione**
+### ⚠️**Sincronizzazione**
 Quando due o più thread tentano di accedere e modificare contemporaneamente la stessa risorsa condivisa, il risultato può essere imprevedibile e non deterministico. Questo può portare ad una **race condition** (condizione di competizione) e a **problemi di sincronizzazione**.
 
 Per evitare le race condition in Java, è importante utilizzare la sincronizzazione dei thread.
 **`Synchronized`** è il meccanismo fondamentale in Java per garantire la **mutua esclusione** a sezioni critiche di codice: **assicura che solo un thread alla volta possa eseguire un blocco di codice sincronizzato**
 
-### **Monitor**
+### ⚠️**Monitor**
 Nella programmazione concorrente, un **monitor** è un meccanismo di sincronizzazione che gestisce l'accesso concorrente a una risorsa condivisa da parte di più thread.
 
 Fornisce metodi per:
@@ -321,7 +321,7 @@ In Java, ogni oggetto può fungere da monitor. Il monitor viene implementato att
 
 Tutti gli oggetti che implementano `java.lang.Object` forniscono i metodi `wait()`, `notify()` e `notifyAll()`, che permettono la sincronizzazione e comunicazione tra thread.
 
-### **wait()**
+### ⚠️**wait()**
 Il metodo `wait()` permette a un thread di:
 - sospendere la propria esecuzione;
 - rilasciare il lock del monitor;
@@ -331,12 +331,12 @@ Oppure permette di rimanere in stato di attesa fino a quando:
 
 Quando risvegliato, il thread deve riacquisire il lock prima di continuare.
 
-### **notify()**
+### ⚠️**notify()**
 Il metodo `motify()` notifica **un singolo thread** in attesa sul monitor. Il thread notificato viene scelto in modo non deterministico dal sistema. Gli altri thread in attesa rimangono sospesi finchè non vengono notificati o scade il loro timeout.
 
 Il thread che chiama `notify()` **non rilascia immediatamente il lock**: continua l'esecuzione e lo rilascia solo quando esce dal blocco sincronizzato.
 
-### **notifyAll()**
+### ⚠️**notifyAll()**
 Il metodo notifyAll() notifica **tutti i thread** in attesa sul monitor. Tutti i thread notificati tentano di acquisire il lock e riprendere l'esecuzione, ma solo uno alla volta può effettivamente procedere.
 
 E' buona pratica **utilizzare sempre** `notifyAll()` **invece di** `notify()`, a meno che non si sappia esattamente quale thread debba essere notificato e si abbia una buona ragione per farlo.
@@ -345,7 +345,17 @@ E' buona pratica **utilizzare sempre** `notifyAll()` **invece di** `notify()`, a
 - thread validi rimangono in attesa indefinita (starvation);
 - si verificano deadlock.
 
+### ⚠️**Thread Safety** 
+La **Thread safety** si riferisce alla capcità di una classe o di una struttura dati di essere **utilizzata da più thread contemporaneamente senza generare errori o risultati imprevedibili**.
 
+La necessità della thread safety emerge a causa di problematiche come la **race condition**, ovvero quando più thread accedono e tentano di modificare contemporaneamente una risorsa condivisa, e il risultato finale dipende dall'ordine non deterministico di esecuzione dei thread, portando a risultati imprevedibili o errati.
+
+Java offre diverse **primitive di sincronizzazione** per gestire thread safety:
+- `volatile`: garantisce che le modifiche a una variabile siano **immediatamente visibili a tutti i thread**. 	Assicura che le letture e scritture avvengano direttamente dalla memoria principale, non dalle cache locali dei core.
+  
+- `synchronized`: garantisce la **mutua esclusione** a sezioni critiche di codice: **assicura che solo un thread alla volta possa eseguire un blocco di codice sincronizzato**.
+  
+- Comunicazione tra thread con `wait()`, `notify()` e `notifyAll()`.
 
 
 
