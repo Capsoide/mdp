@@ -17,7 +17,7 @@ La programmazione concorrente in Java si riferisce alla scrittura di programmi c
 ### **Computazione Asincrona**
 
 Il primo passo nello sviluppo concorrente consiste nel suddividere le attività in *task*.
-### **Runnable**
+## **Runnable**
 L'interfaccia funzionale `Runnable` viene utilizzata per descrivere un task da eseguire (anche in concomitanza con altri task):
 ```java
 public interface Runnable {
@@ -344,6 +344,7 @@ E' buona pratica **utilizzare sempre** `notifyAll()` **invece di** `notify()`, a
 - il thread sbagliato viene risvegliato;
 - thread validi rimangono in attesa indefinita (starvation);
 - si verificano deadlock.
+
 
 
 
