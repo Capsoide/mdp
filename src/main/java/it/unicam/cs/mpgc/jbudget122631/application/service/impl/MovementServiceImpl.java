@@ -16,26 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Implementazione del servizio per la gestione dei movimenti finanziari.
- *
- * Gestisce la logica di business per:
- * - Creazione, modifica ed eliminazione di movimenti
- * - Associazione con categorie multiple
- * - Calcoli e aggregazioni per tipo e periodo
- * - Sincronizzazione automatica con i budget
- * - Inizializzazione automatica delle categorie predefinite
- *
- * Caratteristiche principali:
- * - Aggiornamento automatico dei budget dopo ogni operazione CRUD
- * - Creazione automatica di categorie predefinite al primo avvio
- * - Gestione di movimenti pianificati e ricorrenti
- * - Logging dettagliato per debug e monitoraggio
- * - Ricaricamento automatico delle entità per garantire consistenza
- *
- * @author Nicola Capancioni
- * @version 1.0
- */
 public class MovementServiceImpl implements MovementService {
 
     // Categorie predefinite del sistema
@@ -52,14 +32,6 @@ public class MovementServiceImpl implements MovementService {
     private BudgetService budgetService; // Opzionale per aggiornamento automatico budget
     private boolean categoriesInitialized = false;
 
-    /**
-     * Costruttore principale con supporto completo ai budget.
-     *
-     * @param movementRepository repository per la persistenza dei movimenti
-     * @param categoryRepository repository per le categorie
-     * @param periodRepository repository per i periodi
-     * @param budgetService servizio per aggiornamento automatico budget
-     */
     public MovementServiceImpl(MovementRepository movementRepository,
                                CategoryRepository categoryRepository,
                                PeriodRepository periodRepository,
@@ -70,43 +42,16 @@ public class MovementServiceImpl implements MovementService {
         this.budgetService = budgetService;
     }
 
-    /**
-     * Costruttore per compatibilità senza servizio budget.
-     *
-     * @param movementRepository repository per la persistenza dei movimenti
-     * @param categoryRepository repository per le categorie
-     * @param periodRepository repository per i periodi
-     */
     public MovementServiceImpl(MovementRepository movementRepository,
                                CategoryRepository categoryRepository,
                                PeriodRepository periodRepository) {
         this(movementRepository, categoryRepository, periodRepository, null);
     }
 
-    /**
-     * Imposta il servizio budget per l'aggiornamento automatico.
-     * Utile per iniezione successiva delle dipendenze.
-     *
-     * @param budgetService servizio budget
-     */
     public void setBudgetService(BudgetService budgetService) {
         this.budgetService = budgetService;
     }
 
-    /**
-     * Crea un nuovo movimento con validazione e associazione categorie.
-     *
-     * Flusso operativo:
-     * 1. Inizializza categorie predefinite se necessario
-     * 2. Converte DTO in entità
-     * 3. Associa le categorie specificate
-     * 4. Persiste nel database
-     * 5. Ricarica per garantire consistenza relazioni
-     * 6. Sincronizza i budget automaticamente
-     *
-     * @param movementDTO dati del movimento da creare
-     * @return DTO del movimento creato con ID assegnato
-     */
     @Override
     public MovementDTO createMovement(MovementDTO movementDTO) {
         logMovementOperation("CREATE", movementDTO);
@@ -127,19 +72,12 @@ public class MovementServiceImpl implements MovementService {
         return resultDTO;
     }
 
-    /**
-     * Crea un movimento direttamente dall'entità (per uso interno).
-     *
-     * @param movement entità movimento da salvare
-     * @return movimento salvato con ID assegnato
-     */
     @Override
     public Movement createMovement(Movement movement) {
         System.out.println("SERVICE - Creazione movimento diretto: " + movement.getDescription());
 
         Movement savedMovement = movementRepository.save(movement);
 
-        // Sincronizza budget se possibile
         synchronizeBudgetsForDirectMovement(savedMovement, "CREATE");
 
         return savedMovement;
@@ -158,14 +96,6 @@ public class MovementServiceImpl implements MovementService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Aggiorna un movimento esistente con nuovi dati.
-     *
-     * @param id ID del movimento da aggiornare
-     * @param movementDTO nuovi dati del movimento
-     * @return DTO del movimento aggiornato
-     * @throws RuntimeException se il movimento non esiste
-     */
     @Override
     public MovementDTO updateMovement(Long id, MovementDTO movementDTO) {
         Movement movement = findMovementById(id);
@@ -185,11 +115,6 @@ public class MovementServiceImpl implements MovementService {
         return resultDTO;
     }
 
-    /**
-     * Elimina un movimento e sincronizza i budget.
-     *
-     * @param id ID del movimento da eliminare
-     */
     @Override
     public void deleteMovement(Long id) {
         System.out.println("SERVICE - Eliminazione movimento ID: " + id);
@@ -221,13 +146,6 @@ public class MovementServiceImpl implements MovementService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Recupera tutti i movimenti di una categoria specifica.
-     *
-     * @param categoryId ID della categoria
-     * @return lista dei movimenti della categoria
-     * @throws RuntimeException se la categoria non esiste
-     */
     @Override
     public List<MovementDTO> getMovementsByCategory(Long categoryId) {
         Category category = findCategoryById(categoryId);
@@ -253,15 +171,6 @@ public class MovementServiceImpl implements MovementService {
         return movementRepository.getTotalByTypeAndDateRange(type, startDate, endDate);
     }
 
-    /**
-     * Calcola il totale per una categoria in un intervallo di date.
-     *
-     * @param categoryId ID della categoria
-     * @param startDate data di inizio
-     * @param endDate data di fine
-     * @return totale dei movimenti della categoria nel periodo
-     * @throws RuntimeException se la categoria non esiste
-     */
     @Override
     public BigDecimal getTotalByCategoryAndDateRange(Long categoryId, LocalDate startDate, LocalDate endDate) {
         Category category = findCategoryById(categoryId);
@@ -289,46 +198,27 @@ public class MovementServiceImpl implements MovementService {
         return movementRepository.count();
     }
 
-    /**
-     * Trova un movimento per ID o lancia eccezione.
-     */
     private Movement findMovementById(Long id) {
         return movementRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(MOVEMENT_NOT_FOUND_MESSAGE + " con ID: " + id));
     }
 
-    /**
-     * Trova una categoria per ID o lancia eccezione.
-     */
     private Category findCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException(CATEGORY_NOT_FOUND_MESSAGE + " con ID: " + categoryId));
     }
 
-    /**
-     * Salva un movimento e lo ricarica dal database per garantire relazioni complete.
-     */
     private Movement persistAndReloadMovement(Movement movement) {
         Movement saved = movementRepository.save(movement);
         return movementRepository.findById(saved.getId()).orElse(saved);
     }
 
-    /**
-     * Cattura movimento prima dell'eliminazione per logging e sincronizzazione.
-     */
     private MovementDTO captureMovementBeforeDeletion(Long id) {
         return movementRepository.findById(id)
                 .map(this::convertToDTO)
                 .orElse(null);
     }
 
-    /**
-     * Inizializza le categorie predefinite se non esistono nel database.
-     * Operazione eseguita solo al primo accesso per garantire efficienza.
-     *
-     * Le categorie predefinite includono: Alimentari, Trasporti, Utenze,
-     * Svago, Stipendio, Salute per coprire i casi d'uso più comuni.
-     */
     private void initializeCategoriesIfNeeded() {
         if (categoriesInitialized) {
             return;
@@ -348,9 +238,6 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Crea le categorie predefinite del sistema.
-     */
     private void createDefaultCategories() {
         System.out.println("CATEGORY - Inizializzazione categorie predefinite...");
 
@@ -359,9 +246,6 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Crea una singola categoria predefinita con descrizione automatica.
-     */
     private void createDefaultCategory(String categoryName) {
         try {
             Category category = new Category(categoryName, "Categoria predefinita: " + categoryName);
@@ -372,12 +256,6 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Associa le categorie specificate a un movimento.
-     *
-     * @param movement movimento target
-     * @param categoryIds lista degli ID delle categorie da associare
-     */
     private void associateCategoriesToMovement(Movement movement, List<Long> categoryIds) {
         if (categoryIds == null || categoryIds.isEmpty()) {
             return;
@@ -392,9 +270,6 @@ public class MovementServiceImpl implements MovementService {
         System.out.println("SERVICE - Categorie associate: " + movement.getCategories().size());
     }
 
-    /**
-     * Associa una singola categoria a un movimento con gestione errori.
-     */
     private void associateSingleCategory(Movement movement, Long categoryId) {
         Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
 
@@ -407,10 +282,6 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Aggiorna le categorie associate a un movimento.
-     * Rimuove tutte le categorie esistenti e aggiunge quelle nuove.
-     */
     private void updateMovementCategories(Movement movement, List<Long> categoryIds) {
         movement.getCategories().clear();
 
@@ -423,9 +294,6 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Aggiorna i campi di un movimento con i nuovi dati.
-     */
     private void updateMovementFields(Movement movement, MovementDTO dto) {
         movement.updateDetails(
                 dto.getDescription(),
@@ -436,9 +304,6 @@ public class MovementServiceImpl implements MovementService {
         );
     }
 
-    /**
-     * Cattura informazioni sul movimento prima dell'aggiornamento per logging.
-     */
     private MovementUpdateInfo captureUpdateInfo(Movement movement) {
         return new MovementUpdateInfo(
                 movement.getDescription(),
@@ -446,15 +311,6 @@ public class MovementServiceImpl implements MovementService {
         );
     }
 
-    /**
-     * Sincronizza i budget dopo modifiche ai movimenti.
-     *
-     * Questo metodo viene chiamato automaticamente dopo ogni operazione
-     * CRUD sui movimenti per mantenere i budget aggiornati con i valori reali.
-     *
-     * @param operation tipo di operazione (CREATE, UPDATE, DELETE)
-     * @param movementDTO dati del movimento modificato
-     */
     private void synchronizeBudgets(String operation, MovementDTO movementDTO) {
         if (!budgetServiceAvailable()) {
             logBudgetServiceUnavailable();
@@ -471,9 +327,6 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Sincronizza budget per movimenti creati direttamente (senza DTO).
-     */
     private void synchronizeBudgetsForDirectMovement(Movement movement, String operation) {
         if (budgetServiceAvailable()) {
             try {
@@ -485,19 +338,10 @@ public class MovementServiceImpl implements MovementService {
         }
     }
 
-    /**
-     * Verifica se il servizio budget è disponibile per la sincronizzazione.
-     */
     private boolean budgetServiceAvailable() {
         return budgetService != null;
     }
 
-    /**
-     * Converte un DTO in entità Movement.
-     *
-     * @param dto DTO da convertire
-     * @return entità Movement
-     */
     private Movement convertToEntity(MovementDTO dto) {
         Movement movement = new Movement(
                 dto.getDescription(),
@@ -514,12 +358,6 @@ public class MovementServiceImpl implements MovementService {
         return movement;
     }
 
-    /**
-     * Converte un'entità Movement in DTO.
-     *
-     * @param movement entità da convertire
-     * @return DTO Movement
-     */
     private MovementDTO convertToDTO(Movement movement) {
         MovementDTO dto = new MovementDTO();
 
@@ -541,19 +379,10 @@ public class MovementServiceImpl implements MovementService {
         return dto;
     }
 
-    /**
-     * Verifica se il DTO ha note non vuote.
-     */
     private boolean hasNotes(MovementDTO dto) {
         return dto.getNotes() != null && !dto.getNotes().trim().isEmpty();
     }
 
-    // === METODI DI UTILITÀ ===
-
-    /**
-     * Ottiene informazioni leggibili sulle categorie di un movimento.
-     * Utile per logging e debug.
-     */
     private String getCategoriesInfo(MovementDTO movement) {
         if (movement.getCategoryIds() == null || movement.getCategoryIds().isEmpty()) {
             return "Nessuna categoria";
@@ -564,9 +393,6 @@ public class MovementServiceImpl implements MovementService {
                 .collect(Collectors.joining(", "));
     }
 
-    /**
-     * Risolve il nome di una categoria dall'ID con gestione errori.
-     */
     private String getCategoryNameById(Long categoryId) {
         if (categoryId == null) {
             return "Sconosciuta";
@@ -643,10 +469,6 @@ public class MovementServiceImpl implements MovementService {
         e.printStackTrace();
     }
 
-
-    /**
-     * Informazioni su un movimento prima dell'aggiornamento per confronti e logging.
-     */
     private static class MovementUpdateInfo {
         final String description;
         final BigDecimal amount;

@@ -48,7 +48,6 @@ public class CategoryController implements Initializable {
         this.categoryService = categoryService;
     }
 
-    // Costruttore di default per FXML
     public CategoryController() {
         this.categoryService = null;
     }
@@ -84,7 +83,6 @@ public class CategoryController implements Initializable {
             return new SimpleStringProperty(status);
         });
 
-        // Formattazione status column
         statusColumn.setCellFactory(column -> new TableCell<Category, String>() {
             @Override
             protected void updateItem(String status, boolean empty) {
@@ -106,7 +104,6 @@ public class CategoryController implements Initializable {
         categoriesTable.setItems(categories);
         categoriesTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        // Context menu
         ContextMenu contextMenu = new ContextMenu();
         MenuItem editItem = new MenuItem("Modifica");
         MenuItem deleteItem = new MenuItem("Elimina");
@@ -124,11 +121,9 @@ public class CategoryController implements Initializable {
     }
 
     private void setupTreeView() {
-        // Configurazione TreeView per visualizzazione gerarchica
         categoriesTreeView.setShowRoot(false);
         categoriesTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        // Cell factory per visualizzazione custom
         categoriesTreeView.setCellFactory(tree -> new TreeCell<Category>() {
             @Override
             protected void updateItem(Category category, boolean empty) {
@@ -165,7 +160,6 @@ public class CategoryController implements Initializable {
         activateButton.setOnAction(e -> activateSelectedCategory());
         deactivateButton.setOnAction(e -> deactivateSelectedCategory());
 
-        // Disabilita bottoni se nessuna selezione
         editCategoryButton.disableProperty().bind(
                 categoriesTable.getSelectionModel().selectedItemProperty().isNull());
         deleteCategoryButton.disableProperty().bind(
@@ -197,7 +191,6 @@ public class CategoryController implements Initializable {
     }
 
     private void loadSampleCategories() {
-        // Dati di esempio per test
         Category root1 = new Category("Casa");
         Category child1 = new Category("Utenze");
         Category child2 = new Category("Manutenzione");
@@ -217,7 +210,6 @@ public class CategoryController implements Initializable {
 
         TreeItem<Category> root = new TreeItem<>();
 
-        // Trova le categorie root
         List<Category> rootCategories = categoryList.stream()
                 .filter(cat -> cat.getParent() == null)
                 .collect(Collectors.toList());
@@ -230,7 +222,6 @@ public class CategoryController implements Initializable {
 
         categoriesTreeView.setRoot(root);
 
-        // Espandi tutti i nodi
         expandTreeView(root);
     }
 
@@ -255,7 +246,7 @@ public class CategoryController implements Initializable {
         if (parentCategoryCombo == null) return;
 
         parentCategoryCombo.getItems().clear();
-        parentCategoryCombo.getItems().add(null); // Opzione "Root"
+        parentCategoryCombo.getItems().add(null);
 
         if (categoryService != null) {
             try {
@@ -266,7 +257,6 @@ public class CategoryController implements Initializable {
             }
         }
 
-        // Custom cell factory per visualizzare "Root" per null
         parentCategoryCombo.setCellFactory(listView -> new ListCell<Category>() {
             @Override
             protected void updateItem(Category category, boolean empty) {
@@ -285,7 +275,6 @@ public class CategoryController implements Initializable {
     }
 
     private void applyFilters() {
-        // Implementazione filtri semplificata
         loadCategories();
     }
 
@@ -320,12 +309,10 @@ public class CategoryController implements Initializable {
             Long parentId = parent != null ? parent.getId() : null;
             Category newCategory = categoryService.createCategory(name, description, parentId);
 
-            // Reset form
             newCategoryNameField.clear();
             if (newCategoryDescriptionField != null) newCategoryDescriptionField.clear();
             if (parentCategoryCombo != null) parentCategoryCombo.setValue(null);
 
-            // Ricarica lista
             loadCategories();
             loadParentCategories();
 

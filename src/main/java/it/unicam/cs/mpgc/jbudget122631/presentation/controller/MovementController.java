@@ -71,12 +71,10 @@ public class MovementController implements Initializable {
         this.categoryService = categoryService;
     }
 
-    // Costruttore di default per FXML
     public MovementController() {
         this.movementService = null;
     }
 
-    // Metodo per impostare il riferimento al BudgetController
     public void setBudgetController(BudgetController budgetController) {
         this.budgetController = budgetController;
     }
@@ -262,7 +260,6 @@ public class MovementController implements Initializable {
         loadMovements();
     }
 
-    // METODO PUBBLICO - chiamato dal MainController
     public void showAddNewMovementDialog() {
         try {
             Dialog<MovementDTO> dialog = createMovementDialog(null);
@@ -397,10 +394,9 @@ public class MovementController implements Initializable {
         if (movement != null) {
             typeComboBox.setValue(movement.getType());
         } else {
-            typeComboBox.setValue(MovementType.EXPENSE); // Default value
+            typeComboBox.setValue(MovementType.EXPENSE);
         }
 
-        // ComboBox per le categorie - OBBLIGATORIO
         ComboBox<CategoryOption> categoryComboBox = new ComboBox<>();
         categoryComboBox.setItems(FXCollections.observableArrayList(
                 new CategoryOption(1L, "Alimentari"),
@@ -450,7 +446,6 @@ public class MovementController implements Initializable {
         Node saveButton = dialog.getDialogPane().lookupButton(saveButtonType);
         saveButton.setDisable(true);
 
-        // VALIDAZIONE CORRETTA - include la categoria come obbligatoria
         Runnable validateFields = () -> {
             boolean isValid = !descriptionField.getText().trim().isEmpty()
                     && !amountField.getText().trim().isEmpty()
@@ -481,7 +476,6 @@ public class MovementController implements Initializable {
                     result.setDate(datePicker.getValue());
                     result.setNotes(notesArea.getText().trim());
 
-                    // Imposta la categoria selezionata - SEMPRE PRESENTE grazie alla validazione
                     CategoryOption selectedCategory = categoryComboBox.getValue();
                     result.setCategoryIds(List.of(selectedCategory.getId()));
 
@@ -500,7 +494,6 @@ public class MovementController implements Initializable {
         return dialog;
     }
 
-    // Metodo per notificare l'aggiornamento dei budget
     private void notifyBudgetUpdate() {
         try {
             if (budgetController != null) {
@@ -536,7 +529,6 @@ public class MovementController implements Initializable {
         alert.showAndWait();
     }
 
-    // Classe helper per le opzioni delle categorie
     private static class CategoryOption {
         private final Long id;
         private final String name;

@@ -45,7 +45,6 @@ public class Budget {
     @Column(nullable = false)
     private boolean active = true;
 
-    // Costruttori
     protected Budget() {} // JPA
 
     public Budget(Period period, Category category) {
@@ -60,7 +59,6 @@ public class Budget {
         setPlannedExpenses(plannedExpenses);
     }
 
-    // Metodi business
     public BigDecimal getPlannedBalance() {
         return plannedIncome.subtract(plannedExpenses);
     }
@@ -110,7 +108,6 @@ public class Budget {
         return amount;
     }
 
-    // METODO MODIFICATO CON DEBUG
     public void updateActuals(BigDecimal actualIncome, BigDecimal actualExpenses) {
         System.out.println("ENTITY - updateActuals chiamato per Budget ID: " + this.id);
         System.out.println("ENTITY - Input actualIncome: €" + actualIncome);
@@ -129,7 +126,6 @@ public class Budget {
         System.out.println("  - updatedAt: " + this.updatedAt);
     }
 
-    // Getters/Setters
     public Long getId() { return id; }
     public Period getPeriod() { return period; }
     public Category getCategory() { return category; }

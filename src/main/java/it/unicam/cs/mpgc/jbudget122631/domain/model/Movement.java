@@ -32,7 +32,6 @@ public class Movement {
 
     private LocalDateTime updatedAt;
 
-    // CAMBIO PRINCIPALE: EAGER + CASCADE
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "movement_categories",
@@ -46,13 +45,11 @@ public class Movement {
     @Column(name = "is_scheduled")
     private boolean scheduled = false;
 
-    // Riferimento al piano di ammortamento (se applicabile)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "amortization_plan_id")
     private AmortizationPlan amortizationPlan;
 
-    // Costruttori
-    protected Movement() {} // JPA
+    protected Movement() {}
 
     public Movement(String description, BigDecimal amount, MovementType type, LocalDate date) {
         this.description = Objects.requireNonNull(description, "Descrizione richiesta");
@@ -62,7 +59,6 @@ public class Movement {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Metodi business
     private BigDecimal validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Amount deve essere >= 0");
@@ -106,7 +102,6 @@ public class Movement {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters/Setters
     public Long getId() { return id; }
     public String getDescription() { return description; }
     public BigDecimal getAmount() { return amount; }
@@ -115,7 +110,6 @@ public class Movement {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 
-    // IMPORTANTE: Restituisce il Set originale, non una copia
     public Set<Category> getCategories() {
         System.out.println("ENTITY - getCategories() chiamato, size: " + categories.size());
         return categories;

@@ -13,17 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Implementazione del servizio per la gestione dei budget familiari.
- *
- * Questa classe implementa la logica di business per:
- * - Creazione, modifica ed eliminazione di budget
- * - Calcolo automatico dei valori reali basati sui movimenti
- * - Gestione delle associazioni con periodi e categorie
- *
- * @author Nicola Capancioni
- * @version 1.0
- */
 public class BudgetServiceImpl implements BudgetService {
 
     private static final String GENERAL_CATEGORY_NAME = "Generale";
@@ -34,14 +23,6 @@ public class BudgetServiceImpl implements BudgetService {
     private final PeriodRepository periodRepository;
     private final CategoryRepository categoryRepository;
 
-    /**
-     * Costruttore per l'iniezione delle dipendenze dei repository.
-     *
-     * @param budgetRepository repository per la gestione dei budget
-     * @param movementRepository repository per la gestione dei movimenti
-     * @param periodRepository repository per la gestione dei periodi
-     * @param categoryRepository repository per la gestione delle categorie
-     */
     public BudgetServiceImpl(BudgetRepository budgetRepository,
                              MovementRepository movementRepository,
                              PeriodRepository periodRepository,
@@ -99,15 +80,6 @@ public class BudgetServiceImpl implements BudgetService {
         budgetRepository.deleteById(id);
     }
 
-    /**
-     * Aggiorna i valori reali di un budget specifico basandosi sui movimenti del periodo.
-     *
-     * Logica di calcolo:
-     * - Entrate (INCOME): vengono distribuite su tutti i budget del periodo
-     * - Spese (EXPENSE): vengono filtrate per categoria specifica o considerate tutte per budget generali
-     *
-     * @param budgetId ID del budget da aggiornare
-     */
     @Override
     public void updateBudgetWithRealMovements(Long budgetId) {
         try {
@@ -247,24 +219,12 @@ public class BudgetServiceImpl implements BudgetService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Converte un DTO in entità Budget.
-     *
-     * @param dto il DTO da convertire
-     * @return l'entità Budget
-     */
     private Budget convertToEntity(BudgetDTO dto) {
         Period period = findOrCreatePeriod(dto.getPeriodName());
         Category category = determineCategoryFromDTO(dto);
         return new Budget(period, category, dto.getPlannedIncome(), dto.getPlannedExpenses());
     }
 
-    /**
-     * Converte un'entità Budget in DTO.
-     *
-     * @param budget l'entità da convertire
-     * @return il DTO Budget
-     */
     private BudgetDTO convertToDTO(Budget budget) {
         BudgetDTO dto = new BudgetDTO();
         dto.setId(budget.getId());
@@ -287,24 +247,12 @@ public class BudgetServiceImpl implements BudgetService {
         return dto;
     }
 
-    /**
-     * Determina la categoria dal DTO, restituendo null per categorie generali.
-     *
-     * @param dto il DTO contenente i dati della categoria
-     * @return la categoria trovata/creata o null per budget generali
-     */
     private Category determineCategoryFromDTO(BudgetDTO dto) {
         return dto.getCategoryName() != null && !dto.getCategoryName().equals(GENERAL_CATEGORY_NAME)
                 ? findOrCreateCategory(dto.getCategoryName())
                 : null;
     }
 
-    /**
-     * Calcola il totale delle entrate da una lista di movimenti.
-     *
-     * @param movements lista dei movimenti da analizzare
-     * @return totale delle entrate
-     */
     private BigDecimal calculateTotalIncome(List<Movement> movements) {
         return movements.stream()
                 .filter(m -> m.getType() == MovementType.INCOME)
@@ -312,13 +260,6 @@ public class BudgetServiceImpl implements BudgetService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    /**
-     * Calcola le spese filtrate per categoria specifica o totali per budget generali.
-     *
-     * @param movements lista dei movimenti da analizzare
-     * @param category categoria per il filtro (null per budget generali)
-     * @return totale delle spese filtrate
-     */
     private BigDecimal calculateExpensesForCategory(List<Movement> movements, Category category) {
         if (category != null) {
             // Budget specifico per categoria - solo spese di quella categoria
@@ -336,9 +277,6 @@ public class BudgetServiceImpl implements BudgetService {
         }
     }
 
-    /**
-     * Logga informazioni sui dettagli del calcolo per debug.
-     */
     private void logCalculationDetails(List<Movement> movements, Category category,
                                        BigDecimal actualIncome, BigDecimal actualExpenses) {
         System.out.println("BUDGET - Entrate TOTALI periodo (vanno in tutti i budget): €" + actualIncome);
@@ -364,18 +302,12 @@ public class BudgetServiceImpl implements BudgetService {
         }
     }
 
-    /**
-     * Logga informazioni di base sul budget in elaborazione.
-     */
     private void logBudgetProcessingInfo(Period period, Category category) {
         System.out.println("BUDGET - Processing: " +
                 (category != null ? category.getName() : GENERAL_CATEGORY_NAME) +
                 " per " + period.getName());
     }
 
-    /**
-     * Aggiorna il budget con i nuovi valori calcolati e lo salva nel database.
-     */
     private void updateAndSaveBudget(Budget budget, BigDecimal actualIncome,
                                      BigDecimal actualExpenses, Long budgetId) {
         System.out.println("BUDGET - PRIMA dell'aggiornamento entity:");
@@ -392,9 +324,6 @@ public class BudgetServiceImpl implements BudgetService {
         logPostSaveVerification(savedBudget, budgetId);
     }
 
-    /**
-     * Esegue verifiche dopo il salvataggio per confermare la persistenza dei dati.
-     */
     private void logPostSaveVerification(Budget savedBudget, Long budgetId) {
         System.out.println("BUDGET - DOPO il salvataggio:");
         System.out.println("  - SavedBudget actualIncome: €" + savedBudget.getActualIncome());
@@ -417,12 +346,6 @@ public class BudgetServiceImpl implements BudgetService {
         System.out.println("BUDGET - Aggiornamento completato per budget ID: " + budgetId);
     }
 
-    /**
-     * Trova un periodo esistente per nome o ne crea uno nuovo.
-     *
-     * @param periodName nome del periodo da trovare/creare
-     * @return il periodo trovato o creato
-     */
     private Period findOrCreatePeriod(String periodName) {
         System.out.println("PERIOD - Ricerca/creazione periodo: " + periodName);
 
@@ -442,9 +365,6 @@ public class BudgetServiceImpl implements BudgetService {
         }
     }
 
-    /**
-     * Cerca un periodo esistente per nome.
-     */
     private Optional<Period> findExistingPeriodByName(String periodName) {
         List<Period> allPeriods = periodRepository.findAll();
         return allPeriods.stream()
@@ -457,9 +377,6 @@ public class BudgetServiceImpl implements BudgetService {
                 });
     }
 
-    /**
-     * Crea un nuovo periodo basandosi sul nome fornito.
-     */
     private Period createNewPeriod(String periodName) {
         System.out.println("PERIOD - Periodo non esistente, creazione in corso...");
 
@@ -477,9 +394,6 @@ public class BudgetServiceImpl implements BudgetService {
         return savedPeriod;
     }
 
-    /**
-     * Crea un periodo di fallback per il mese corrente.
-     */
     private Period createFallbackPeriod() {
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.withDayOfMonth(1);
@@ -490,9 +404,6 @@ public class BudgetServiceImpl implements BudgetService {
         return periodRepository.save(fallbackPeriod);
     }
 
-    /**
-     * Calcola l'intervallo di date per un periodo basandosi sul nome.
-     */
     private PeriodDateRange calculateDateRangeForPeriod(String periodName) {
         // Mappa dei periodi supportati
         Map<String, PeriodDateRange> periodMap = createPeriodDateMap();
@@ -511,14 +422,6 @@ public class BudgetServiceImpl implements BudgetService {
         );
     }
 
-    /**
-     * Crea la mappa dei periodi supportati con le relative date.
-     * Utilizza un approccio più mantenibile rispetto a un long switch.
-     */
-    /**
-     * Crea la mappa dei periodi supportati con le relative date.
-     * Utilizza un approccio più mantenibile rispetto a un long switch.
-     */
     private Map<String, PeriodDateRange> createPeriodDateMap() {
         Map<String, PeriodDateRange> periodMap = new HashMap<>();
 
@@ -553,12 +456,6 @@ public class BudgetServiceImpl implements BudgetService {
         return periodMap;
     }
 
-    /**
-     * Trova una categoria esistente per nome o ne crea una nuova.
-     *
-     * @param categoryName nome della categoria da trovare/creare
-     * @return la categoria trovata o creata
-     */
     private Category findOrCreateCategory(String categoryName) {
         List<Category> existingCategories = categoryRepository.findByName(categoryName);
         if (!existingCategories.isEmpty()) {
@@ -569,9 +466,6 @@ public class BudgetServiceImpl implements BudgetService {
         return categoryRepository.save(category);
     }
 
-    /**
-     * Classe di supporto per rappresentare un intervallo di date per un periodo.
-     */
     private static class PeriodDateRange {
         final LocalDate startDate;
         final LocalDate endDate;

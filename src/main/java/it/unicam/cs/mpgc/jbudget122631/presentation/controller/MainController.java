@@ -34,11 +34,9 @@ public class MainController implements Initializable {
     private final ScheduledExpenseService scheduledExpenseService;
     private final CategoryService categoryService;
 
-    // Mappa per tenere traccia dei controller dei tab
     private final Map<String, Object> tabControllers = new HashMap<>();
 
     public MainController() {
-        // Inizializza i servizi
         this.movementService = ApplicationConfig.getMovementService();
         this.budgetService = ApplicationConfig.getBudgetService();
         this.statisticsService = ApplicationConfig.getStatisticsService();
@@ -91,10 +89,10 @@ public class MainController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard-view.fxml"));
             DashboardController controller = new DashboardController(
                     movementService, budgetService, statisticsService, scheduledExpenseService);
-            loader.setController(controller);  //  DEVE essere PRIMA di loader.load()
+            loader.setController(controller);
 
             Tab dashboardTab = contentTabPane.getTabs().get(0);
-            dashboardTab.setContent(loader.load());  //  Carica DOPO aver impostato il controller
+            dashboardTab.setContent(loader.load());
         } catch (IOException e) {
             showError("Errore caricamento dashboard", e.getMessage());
         }
@@ -134,7 +132,6 @@ public class MainController implements Initializable {
             contentTabPane.getTabs().add(newTab);
             contentTabPane.getSelectionModel().select(newTab);
 
-            // Salva il riferimento al controller
             tabControllers.put(title, controller);
         } catch (IOException e) {
             showError("Errore apertura " + title, e.getMessage());
@@ -148,10 +145,8 @@ public class MainController implements Initializable {
 
     @FXML
     private void showNewMovementDialog() {
-        // Apri il tab Movimenti se non è già aperto
         showMovementsTab();
 
-        // Dopo un breve ritardo, invoca il dialog del MovementController
         Platform.runLater(() -> {
             MovementController movementController = (MovementController) tabControllers.get("Movimenti");
             if (movementController != null) {
@@ -162,17 +157,13 @@ public class MainController implements Initializable {
         });
     }
 
-    // FIX: Apre direttamente il dialog per creare un nuovo budget
     @FXML
     private void showNewBudgetDialog() {
-        // Apri il tab Budget se non è già aperto
         showBudgetsTab();
 
-        // Dopo un breve ritardo, invoca il dialog del BudgetController
         Platform.runLater(() -> {
             BudgetController budgetController = (BudgetController) tabControllers.get("Budget");
             if (budgetController != null) {
-                // Chiama il metodo addNewBudget() del BudgetController
                 budgetController.addNewBudget();
             } else {
                 showError("Errore", "Controller budget non disponibile");
@@ -181,10 +172,8 @@ public class MainController implements Initializable {
     }
 
     private void refreshAllTabs() {
-        // Aggiorna sempre la Dashboard
         showDashboard();
 
-        // Aggiorna solo i tab aperti
         for (Tab tab : contentTabPane.getTabs()) {
             String tabName = tab.getText();
             switch (tabName) {

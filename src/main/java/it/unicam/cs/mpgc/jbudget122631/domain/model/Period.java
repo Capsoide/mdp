@@ -22,8 +22,7 @@ public class Period {
     @Column(nullable = false)
     private String name;
 
-    // Costruttori
-    protected Period() {} // JPA
+    protected Period() {}
 
     public Period(String name, LocalDate startDate, LocalDate endDate) {
         validateDates(startDate, endDate);
@@ -50,7 +49,6 @@ public class Period {
         }
     }
 
-    // Getters/Setters
     public Long getId() { return id; }
     public String getName() { return name; }
     public LocalDate getStartDate() { return startDate; }
@@ -60,7 +58,6 @@ public class Period {
         this.name = Objects.requireNonNull(name);
     }
 
-    // Metodo helper per settare l'ID (utile per i test)
     public void setId(Long id) {
         this.id = id;
     }
@@ -71,12 +68,10 @@ public class Period {
         if (!(o instanceof Period)) return false;
         Period period = (Period) o;
 
-        // Se entrambi hanno un ID, confronta solo l'ID
         if (id != null && period.id != null) {
             return Objects.equals(id, period.id);
         }
 
-        // Altrimenti confronta nome e date
         return Objects.equals(name, period.name) &&
                 Objects.equals(startDate, period.startDate) &&
                 Objects.equals(endDate, period.endDate);

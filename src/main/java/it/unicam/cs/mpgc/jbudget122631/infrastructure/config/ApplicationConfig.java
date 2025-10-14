@@ -9,7 +9,6 @@ public final class ApplicationConfig {
 
     private ApplicationConfig() {}
 
-    // --- Repositories ---
     private static MovementRepository movementRepository;
     private static CategoryRepository categoryRepository;
     private static BudgetRepository budgetRepository;
@@ -56,14 +55,12 @@ public final class ApplicationConfig {
         return amortizationPlanRepository;
     }
 
-    // --- Services ---
     private static MovementService movementService;
     private static CategoryService categoryService;
     private static BudgetService budgetService;
     private static ScheduledExpenseService scheduledExpenseService;
     private static StatisticsService statisticsService;
 
-    // IMPORTANTE: Inizializza prima il BudgetService senza MovementService per evitare dipendenza circolare
     public static BudgetService getBudgetService() {
         if (budgetService == null) {
             budgetService = new BudgetServiceImpl(
@@ -77,7 +74,6 @@ public final class ApplicationConfig {
         return budgetService;
     }
 
-    // MODIFICATO: Ora passa il BudgetService al MovementService per aggiornamento automatico
     public static MovementService getMovementService() {
         if (movementService == null) {
             // Prima inizializza il BudgetService
@@ -88,7 +84,7 @@ public final class ApplicationConfig {
                     getMovementRepository(),
                     getCategoryRepository(),
                     getPeriodRepository(),
-                    budgetSvc  // AGGIUNTO: Passa il BudgetService per aggiornamento automatico
+                    budgetSvc  // Passa il BudgetService per aggiornamento automatico
             );
 
             System.out.println("INIT - MovementService inizializzato con aggiornamento budget automatico");
@@ -127,23 +123,19 @@ public final class ApplicationConfig {
         return statisticsService;
     }
 
-    // --- Metodo per inizializzazione completa in ordine corretto ---
     public static void initializeServices() {
         System.out.println("INIT - Avvio inizializzazione servizi...");
 
-        // 1. Prima i repository (automatici)
-        // 2. Poi i servizi nell'ordine corretto per evitare dipendenze circolari
-        getCategoryService();      // Nessuna dipendenza
-        getBudgetService();        // Dipende da repository
-        getMovementService();      // Dipende da BudgetService per aggiornamento automatico
-        getScheduledExpenseService(); // Dipende da MovementService
-        getStatisticsService();    // Dipende da repository
+        getCategoryService();
+        getBudgetService();
+        getMovementService();
+        getScheduledExpenseService();
+        getStatisticsService();
 
         System.out.println("INIT - Tutti i servizi inizializzati con successo!");
         System.out.println("INIT - Aggiornamento automatico budget ABILITATO");
     }
 
-    // --- Test del sistema budget-movimento ---
     public static void testBudgetIntegration() {
         System.out.println("TEST - Verificando integrazione Budget-Movement...");
 
@@ -156,7 +148,7 @@ public final class ApplicationConfig {
                 System.out.println("TEST - ✓ BudgetService disponibile");
                 System.out.println("TEST - ✓ Aggiornamento automatico PRONTO");
 
-                // Verifica se il MovementService ha il BudgetService
+
                 if (mvService instanceof MovementServiceImpl) {
                     System.out.println("TEST - ✓ MovementServiceImpl con aggiornamento budget configurato");
                 }
@@ -169,7 +161,6 @@ public final class ApplicationConfig {
         }
     }
 
-    // --- Shutdown ---
     public static void shutdown() {
         try {
             System.out.println("SHUTDOWN - Chiusura servizi...");

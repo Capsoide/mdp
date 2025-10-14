@@ -48,7 +48,6 @@ public class AmortizationPlan {
         this.startDate = Objects.requireNonNull(startDate);
     }
 
-    // Metodi di validazione
     private BigDecimal validatePositiveAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Importo deve essere > 0");
@@ -70,7 +69,6 @@ public class AmortizationPlan {
         return installments;
     }
 
-    // Metodi business
     public void generateInstallments() {
         installments.clear();
 
@@ -148,7 +146,6 @@ public class AmortizationPlan {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Getters/Setters
     public Long getId() { return id; }
     public String getName() { return name; }
     public BigDecimal getTotalAmount() { return totalAmount; }

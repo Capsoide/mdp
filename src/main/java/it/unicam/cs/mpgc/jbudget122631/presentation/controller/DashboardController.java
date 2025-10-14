@@ -44,7 +44,6 @@ public class DashboardController implements Initializable {
     private StatisticsService statisticsService;
     private ScheduledExpenseService scheduledExpenseService;
 
-    // Enum per i periodi disponibili
     private enum PeriodType {
         CURRENT_MONTH("Mese Corrente"),
         LAST_3_MONTHS("Ultimi 3 Mesi"),
@@ -90,18 +89,14 @@ public class DashboardController implements Initializable {
                     PeriodType.CURRENT_YEAR.getDisplayName()
             ));
 
-            // Default: Ultimi 6 mesi per avere dati più significativi
             periodSelectorCombo.setValue(PeriodType.LAST_6_MONTHS.getDisplayName());
 
-            // Listener per cambiamento periodo con forzatura layout
             periodSelectorCombo.setOnAction(e -> {
                 loadDashboardData();
-                // Forza il layout dopo il caricamento dei dati
                 Platform.runLater(() -> forceChartLayout());
             });
         }
 
-        // Setup del bottone refresh programmaticamente
         if (refreshButton != null) {
             refreshButton.setOnAction(e -> refreshDashboard());
         }
@@ -132,7 +127,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // FIX: Calcolo corretto delle date
     private PeriodDates getSelectedPeriodDates() {
         String selectedPeriod = periodSelectorCombo != null ?
                 periodSelectorCombo.getValue() :
@@ -145,16 +139,15 @@ public class DashboardController implements Initializable {
             startDate = now.withDayOfMonth(1);
             endDate = now.withDayOfMonth(now.lengthOfMonth());
         } else if (PeriodType.LAST_3_MONTHS.getDisplayName().equals(selectedPeriod)) {
-            endDate = now.withDayOfMonth(now.lengthOfMonth()); // Fine del mese corrente
-            startDate = endDate.minusMonths(2).withDayOfMonth(1); // Inizio 3 mesi fa
+            endDate = now.withDayOfMonth(now.lengthOfMonth());
+            startDate = endDate.minusMonths(2).withDayOfMonth(1);
         } else if (PeriodType.LAST_6_MONTHS.getDisplayName().equals(selectedPeriod)) {
-            endDate = now.withDayOfMonth(now.lengthOfMonth()); // Fine del mese corrente
-            startDate = endDate.minusMonths(5).withDayOfMonth(1); // Inizio 6 mesi fa
+            endDate = now.withDayOfMonth(now.lengthOfMonth());
+            startDate = endDate.minusMonths(5).withDayOfMonth(1);
         } else if (PeriodType.CURRENT_YEAR.getDisplayName().equals(selectedPeriod)) {
             startDate = LocalDate.of(now.getYear(), 1, 1);
             endDate = LocalDate.of(now.getYear(), 12, 31);
         } else {
-            // Default: ultimi 6 mesi
             endDate = now.withDayOfMonth(now.lengthOfMonth());
             startDate = endDate.minusMonths(5).withDayOfMonth(1);
         }
@@ -216,7 +209,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // FIX: Trend mensile con gestione corretta dei periodi e date
     private void updateMonthlyTrendChart(LocalDate startDate, LocalDate endDate) {
         if (monthlyTrendChart == null || statisticsService == null) return;
 
@@ -231,10 +223,8 @@ public class DashboardController implements Initializable {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Bilancio Mensile");
 
-            // Genera SEMPRE tutti i mesi del periodo richiesto per consistenza
             Map<String, BigDecimal> completeMonthlyData = generateCompleteMonthlyData(startDate, endDate, monthlyTrend);
 
-            // Aggiungi i dati in ordine cronologico con formattazione migliorata
             completeMonthlyData.entrySet().forEach(entry -> {
                 //System.out.println("TREND - Aggiunta data point: " + entry.getKey() + " = " + entry.getValue());
                 String displayDate = formatMonthForDisplay(entry.getKey());
@@ -244,7 +234,6 @@ public class DashboardController implements Initializable {
             monthlyTrendChart.getData().clear();
             monthlyTrendChart.getData().add(series);
 
-            // CONFIGURAZIONE DELL'ASSE X per spacing uniforme
             if (monthlyTrendChart.getXAxis() instanceof javafx.scene.chart.CategoryAxis) {
                 javafx.scene.chart.CategoryAxis xAxis = (javafx.scene.chart.CategoryAxis) monthlyTrendChart.getXAxis();
                 xAxis.setAutoRanging(false);
@@ -252,7 +241,6 @@ public class DashboardController implements Initializable {
                 xAxis.setGapStartAndEnd(true);
             }
 
-            // Forza l'aggiornamento del layout per evitare problemi di rendering
             Platform.runLater(() -> {
                 forceChartLayout();
             });
@@ -265,7 +253,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // Metodo helper per generare dati completi del periodo
     private Map<String, BigDecimal> generateCompleteMonthlyData(LocalDate startDate, LocalDate endDate,
                                                                 Map<String, BigDecimal> actualData) {
         Map<String, BigDecimal> completeData = new java.util.LinkedHashMap<>();
@@ -284,24 +271,21 @@ public class DashboardController implements Initializable {
         return completeData;
     }
 
-    // Metodo per formattare i mesi per una migliore visualizzazione
     private String formatMonthForDisplay(String yearMonth) {
         try {
             YearMonth ym = YearMonth.parse(yearMonth);
-            // Formatta come "Gen 25" invece di "2025-01"
             return ym.getMonth().getDisplayName(
                     java.time.format.TextStyle.SHORT,
                     java.util.Locale.ITALIAN
             ) + " " + String.valueOf(ym.getYear()).substring(2);
         } catch (Exception e) {
-            return yearMonth; // Fallback al formato originale
+            return yearMonth;
         }
     }
     private void forceChartLayout() {
         if (monthlyTrendChart != null) {
             monthlyTrendChart.layout();
             monthlyTrendChart.autosize();
-            // Forza il refresh delle etichette dell'asse X
             monthlyTrendChart.getXAxis().setAutoRanging(false);
             monthlyTrendChart.getXAxis().setAutoRanging(true);
         }
@@ -409,16 +393,11 @@ public class DashboardController implements Initializable {
         }
     }
 
-
-
-    // FIX: Metodo per refresh con forzatura layout migliorata
     public void refreshDashboard() {
         loadDashboardData();
 
-        // Forza il re-layout di tutti i grafici con un doppio passaggio
         Platform.runLater(() -> {
             forceChartLayout();
-            // Secondo passaggio dopo 50ms per assicurarsi che tutto sia renderizzato
             Platform.runLater(() -> {
                 try {
                     Thread.sleep(50);

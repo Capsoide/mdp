@@ -131,17 +131,12 @@ public class JpaCategoryRepository implements CategoryRepository {
 
     @Override
     public List<Category> findDescendants(Category category) {
-        // Implementazione ricorsiva - per semplicità, restituiamo solo i figli diretti
-        // In un'implementazione completa, si potrebbero usare CTE o query ricorsive
         return findByParent(category);
     }
 
     @Override
     public List<Category> findAncestors(Category category) {
-        // Implementazione semplificata - restituisce il path verso la root
         try (Session session = sessionFactory.openSession()) {
-            // In un'implementazione completa, si userebbe una query ricorsiva
-            // Per ora restituiamo solo il parent diretto
             if (category.getParent() != null) {
                 return List.of(category.getParent());
             }

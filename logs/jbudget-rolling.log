@@ -1,1 +1,27 @@
-2025-09-04 14:08:01 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17h50m27s246ms905µs401ns).
+2025-09-17 10:24:03 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:24:03 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(175 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:24:36 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:24:36 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(175 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:24:42 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:24:42 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(175 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:24:52 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:24:52 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(173 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:25:12 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:25:12 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(133 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:26:58 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:26:58 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(175 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:27:16 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:27:16 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(175 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:27:24 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:27:24 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(176 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]
+2025-09-17 10:35:56 [JavaFX Application Thread] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 23503, SQLState: 23503
+2025-09-17 10:35:56 [JavaFX Application Thread] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Referential integrity constraint violation: "FKGG64I4EOABA2CS5C15DT5TU9P: PUBLIC.SCHEDULED_EXPENSES FOREIGN KEY(CREATED_MOVEMENT_ID) REFERENCES PUBLIC.MOVEMENTS(ID) (CAST(177 AS BIGINT))"; SQL statement:
+delete from movements where id=? [23503-214]

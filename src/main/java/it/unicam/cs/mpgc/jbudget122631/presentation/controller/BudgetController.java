@@ -175,7 +175,6 @@ public class BudgetController implements Initializable {
         });
     }
 
-    // MODIFICATO: Rimossa categoria "Generale"
     private void setupFilters() {
         periodFilter.setItems(FXCollections.observableArrayList(
                 "Tutti i periodi",
@@ -185,7 +184,6 @@ public class BudgetController implements Initializable {
         ));
         periodFilter.setValue("Tutti i periodi");
 
-        // RIMOSSA "Generale" dalle categorie
         categoryFilter.setItems(FXCollections.observableArrayList(
                 "Tutte le categorie", "Alimentari", "Trasporti", "Utenze", "Stipendio", "Salute", "Svago"
         ));
@@ -297,7 +295,6 @@ public class BudgetController implements Initializable {
         }
     }
 
-    // MODIFICATO: Rimossa logica per categoria "Generale"
     private BigDecimal calculateRealAmountForBudget(List<MovementDTO> movements, String categoryName, MovementType type) {
         if (movements == null || movements.isEmpty()) {
             return BigDecimal.ZERO;
@@ -307,15 +304,12 @@ public class BudgetController implements Initializable {
                 .filter(movement -> {
                     boolean typeMatch = movement.getType() == type;
 
-                    // Solo budget specifici per categoria - filtro per spese della categoria
                     if (type == MovementType.EXPENSE && movement.getCategoryIds() != null && !movement.getCategoryIds().isEmpty()) {
                         Long categoryId = movement.getCategoryIds().get(0);
                         String movementCategoryName = getCategoryNameById(categoryId);
                         return typeMatch && categoryName.equals(movementCategoryName);
                     }
 
-                    // Per le entrate: tutti i budget di categoria NON ricevono entrate
-                    // (le entrate andranno gestite separatamente o in un budget generale se necessario)
                     return false;
                 })
                 .map(MovementDTO::getAmount)
@@ -341,23 +335,16 @@ public class BudgetController implements Initializable {
                 .map(BudgetDTO::getPlannedIncome)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // FIX: Calcola le entrate reali uniche per periodo
-        // Invece di sommare le entrate di ogni budget (che sono duplicate),
-        // raggruppa per periodo e conta le entrate una sola volta per periodo
         BigDecimal totalActual = budgets.stream()
                 .collect(Collectors.groupingBy(BudgetDTO::getPeriodName))
                 .values()
                 .stream()
                 .map(budgetsPerPeriod -> {
-                    // Per ogni periodo, prendi le entrate reali dal primo budget
-                    // (dato che sono uguali per tutti i budget del periodo)
                     return budgetsPerPeriod.isEmpty() ? BigDecimal.ZERO :
                             budgetsPerPeriod.get(0).getActualIncome();
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // La varianza totale deve essere calcolata correttamente
-        // Varianza = (Entrate reali uniche - Spese reali totali) - (Entrate pianificate - Spese pianificate)
         BigDecimal totalPlannedExpenses = budgets.stream()
                 .map(BudgetDTO::getPlannedExpenses)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -432,7 +419,6 @@ public class BudgetController implements Initializable {
         loadBudgets();
     }
 
-    // MODIFICATO: Rimossa categoria "Generale" dal dialog
     public void addNewBudget() {
         try {
             Dialog<BudgetDTO> dialog = new Dialog<>();
@@ -453,7 +439,6 @@ public class BudgetController implements Initializable {
                     "Maggio 2025", "Giugno 2025", "Luglio 2025", "Agosto 2025",
                     "Settembre 2025", "Ottobre 2025", "Novembre 2025", "Dicembre 2025"));
 
-            // RIMOSSA "Generale" dalle opzioni
             ComboBox<String> categoryCombo = new ComboBox<>();
             categoryCombo.setItems(FXCollections.observableArrayList(
                     "Alimentari", "Trasporti", "Utenze", "Svago", "Stipendio", "Salute"));

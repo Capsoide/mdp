@@ -30,7 +30,6 @@ import java.util.Optional;
 
 public class ScheduledExpenseController implements Initializable {
 
-    // Tabella principale
     @FXML private TableView<ScheduledExpense> scheduledExpensesTable;
     @FXML private TableColumn<ScheduledExpense, String> descriptionColumn;
     @FXML private TableColumn<ScheduledExpense, BigDecimal> amountColumn;
@@ -39,7 +38,6 @@ public class ScheduledExpenseController implements Initializable {
     @FXML private TableColumn<ScheduledExpense, String> statusColumn;
     @FXML private TableColumn<ScheduledExpense, String> daysLeftColumn;
 
-    // Filtri e controlli
     @FXML private ComboBox<String> statusFilter;
     @FXML private ComboBox<RecurrenceType> recurrenceFilter;
     @FXML private DatePicker dueDateFilter;
@@ -52,13 +50,11 @@ public class ScheduledExpenseController implements Initializable {
     @FXML private Button refreshButton;
     @FXML private Button exportButton;
 
-    // Statistiche e summary
     @FXML private Label totalExpensesLabel;
     @FXML private Label overdueCountLabel;
     @FXML private Label dueTodayCountLabel;
     @FXML private Label dueThisWeekCountLabel;
 
-    // Sezioni azioni rapide
     @FXML private VBox overdueExpensesBox;
     @FXML private VBox dueTodayBox;
     @FXML private VBox dueThisWeekBox;
@@ -83,12 +79,10 @@ public class ScheduledExpenseController implements Initializable {
     }
 
     private void setupTable() {
-        // Configurazione colonne base
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
-        // Colonna ricorrenza
         recurrenceColumn.setCellValueFactory(cellData -> {
             RecurrenceType type = cellData.getValue().getRecurrenceType();
             String recurrence = type != RecurrenceType.NONE ? type.getDescription() : "Unica";
@@ -99,7 +93,6 @@ public class ScheduledExpenseController implements Initializable {
             return new SimpleStringProperty(recurrence);
         });
 
-        // Colonna status
         statusColumn.setCellValueFactory(cellData -> {
             ScheduledExpense expense = cellData.getValue();
             String status;
@@ -117,7 +110,6 @@ public class ScheduledExpenseController implements Initializable {
             return new SimpleStringProperty(status);
         });
 
-        // Colonna giorni rimanenti
         daysLeftColumn.setCellValueFactory(cellData -> {
             ScheduledExpense expense = cellData.getValue();
             long daysLeft = expense.getDaysUntilDue();
@@ -136,20 +128,16 @@ public class ScheduledExpenseController implements Initializable {
             return new SimpleStringProperty(text);
         });
 
-        // Configurazione formattazione colonne
         setupMonetaryColumn(amountColumn);
         setupDateColumn(dueDateColumn);
         setupStatusColumn(statusColumn);
         setupDaysLeftColumn(daysLeftColumn);
 
-        // Configurazione tabella
         scheduledExpensesTable.setItems(scheduledExpenses);
         scheduledExpensesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        // Context menu
         setupContextMenu();
 
-        // Ordinamento di default per data scadenza
         scheduledExpensesTable.getSortOrder().add(dueDateColumn);
     }
 
@@ -166,7 +154,6 @@ public class ScheduledExpenseController implements Initializable {
         completeItem.setOnAction(e -> completeSelectedExpense());
         viewDetailsItem.setOnAction(e -> viewExpenseDetails());
 
-        // Disabilita elementi in base al contesto
         contextMenu.setOnShowing(e -> {
             ScheduledExpense selected = scheduledExpensesTable.getSelectionModel().getSelectedItem();
             if (selected != null) {
@@ -196,7 +183,6 @@ public class ScheduledExpenseController implements Initializable {
                 } else {
                     setText(String.format("\u20AC %.2f", amount));
 
-                    // Colora in base al tipo di movimento
                     ScheduledExpense expense = getTableRow().getItem();
                     if (expense != null) {
                         if (expense.getType() == MovementType.INCOME) {
@@ -291,20 +277,17 @@ public class ScheduledExpenseController implements Initializable {
     }
 
     private void setupFilters() {
-        // Status filter - MODIFICATO per impostare "Solo attive" come default
         if (statusFilter != null) {
             statusFilter.setItems(FXCollections.observableArrayList(
                     "Tutte", "Solo attive", "In scadenza", "Scadute", "Completate", "Ricorrenti"
             ));
-            statusFilter.setValue("Solo attive"); // Default mostra solo spese attive
+            statusFilter.setValue("Solo attive");
         }
 
-        // Recurrence filter
         if (recurrenceFilter != null) {
             recurrenceFilter.setItems(FXCollections.observableArrayList(RecurrenceType.values()));
             recurrenceFilter.setPromptText("Tipo ricorrenza");
 
-            // Custom cell factory per mostrare descrizioni
             recurrenceFilter.setCellFactory(listView -> new ListCell<RecurrenceType>() {
                 @Override
                 protected void updateItem(RecurrenceType item, boolean empty) {
@@ -322,11 +305,9 @@ public class ScheduledExpenseController implements Initializable {
             });
         }
 
-        // Event handlers
         if (filterButton != null) filterButton.setOnAction(e -> applyFilters());
         if (clearFilterButton != null) clearFilterButton.setOnAction(e -> clearFilters());
 
-        // Auto-apply filters on selection change
         if (statusFilter != null) {
             statusFilter.setOnAction(e -> applyFilters());
         }
@@ -346,7 +327,6 @@ public class ScheduledExpenseController implements Initializable {
         if (refreshButton != null) refreshButton.setOnAction(e -> refreshExpenses());
         if (exportButton != null) exportButton.setOnAction(e -> exportExpenses());
 
-        // Disabilita bottoni se nessuna selezione
         if (editExpenseButton != null) {
             editExpenseButton.disableProperty().bind(
                     scheduledExpensesTable.getSelectionModel().selectedItemProperty().isNull());
@@ -360,13 +340,11 @@ public class ScheduledExpenseController implements Initializable {
                     scheduledExpensesTable.getSelectionModel().selectedItemProperty().isNull());
         }
     }
-    //Filtra le spese completate per default
     private void loadScheduledExpenses() {
         try {
             if (scheduledExpenseService != null) {
                 List<ScheduledExpense> allExpenses = scheduledExpenseService.getAllScheduledExpenses();
 
-                // Filtra le spese completate per default (mostra solo attive)
                 List<ScheduledExpense> activeExpenses = allExpenses.stream()
                         .filter(expense -> !expense.isCompleted())
                         .collect(Collectors.toList());
@@ -384,7 +362,6 @@ public class ScheduledExpenseController implements Initializable {
 
     private void updateSummaryLabels() {
         try {
-            // Calcola totali
             BigDecimal totalActiveAmount = scheduledExpenses.stream()
                     .filter(e -> !e.isCompleted() && e.getType() == MovementType.EXPENSE)
                     .map(ScheduledExpense::getAmount)
@@ -405,7 +382,6 @@ public class ScheduledExpenseController implements Initializable {
                     })
                     .sum();
 
-            // Aggiorna labels
             if (totalExpensesLabel != null) {
                 totalExpensesLabel.setText(String.format("\u20AC %.2f", totalActiveAmount));
             }
@@ -547,21 +523,19 @@ public class ScheduledExpenseController implements Initializable {
     private void applyFilters() {
         try {
             if (scheduledExpenseService == null) {
-                // Filtra dati di esempio
                 //loadSampleExpenses();
                 return;
             }
 
             List<ScheduledExpense> filteredExpenses = scheduledExpenseService.getAllScheduledExpenses();
 
-            // Applica filtro status
             String statusFilterValue = statusFilter != null ? statusFilter.getValue() : "Solo attive";
             if (statusFilterValue != null && !"Tutte".equals(statusFilterValue)) {
                 filteredExpenses = filteredExpenses.stream()
                         .filter(expense -> {
                             switch (statusFilterValue) {
                                 case "Tutte":
-                                    return true; // Mostra tutto incluse le completate
+                                    return true;
                                 case "Solo attive":
                                     return !expense.isCompleted() && expense.isActive();
                                 case "In scadenza":
@@ -573,13 +547,12 @@ public class ScheduledExpenseController implements Initializable {
                                 case "Ricorrenti":
                                     return expense.isRecurring();
                                 default:
-                                    return !expense.isCompleted(); // Default: solo attive
+                                    return !expense.isCompleted();
                             }
                         })
                         .collect(Collectors.toList());
             }
 
-            // Applica filtro ricorrenza
             RecurrenceType recurrenceFilterValue = recurrenceFilter != null ? recurrenceFilter.getValue() : null;
             if (recurrenceFilterValue != null) {
                 filteredExpenses = filteredExpenses.stream()
@@ -587,7 +560,6 @@ public class ScheduledExpenseController implements Initializable {
                         .collect(Collectors.toList());
             }
 
-            // Applica filtro data
             LocalDate dateFilterValue = dueDateFilter != null ? dueDateFilter.getValue() : null;
             if (dateFilterValue != null) {
                 filteredExpenses = filteredExpenses.stream()
@@ -605,7 +577,7 @@ public class ScheduledExpenseController implements Initializable {
     }
 
     private void clearFilters() {
-        if (statusFilter != null) statusFilter.setValue("Solo attive"); // Reset al default
+        if (statusFilter != null) statusFilter.setValue("Solo attive");
         if (recurrenceFilter != null) recurrenceFilter.setValue(null);
         if (dueDateFilter != null) dueDateFilter.setValue(null);
         loadScheduledExpenses();
@@ -624,7 +596,6 @@ public class ScheduledExpenseController implements Initializable {
                 if (scheduledExpenseService != null) {
                     ScheduledExpense savedExpense = scheduledExpenseService.createScheduledExpense(newExpense);
 
-                    // Applica filtri per mostrare la nuova spesa se appropriato
                     applyFilters();
 
                     showInfo("Spesa Creata",

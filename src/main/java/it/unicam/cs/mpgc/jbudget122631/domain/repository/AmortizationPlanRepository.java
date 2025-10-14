@@ -7,14 +7,12 @@ import java.util.Optional;
 
 public interface AmortizationPlanRepository {
 
-    // CRUD operations
     AmortizationPlan save(AmortizationPlan plan);
     Optional<AmortizationPlan> findById(Long id);
     List<AmortizationPlan> findAll();
     void delete(AmortizationPlan plan);
     void deleteById(Long id);
 
-    // Query methods
     Optional<AmortizationPlan> findByName(String name);
     List<AmortizationPlan> findActivePlans();
     List<AmortizationPlan> findCompletedPlans();

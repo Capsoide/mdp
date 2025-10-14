@@ -28,7 +28,6 @@ public class JpaBudgetRepository implements BudgetRepository {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
-            // DEBUG: Prima del salvataggio
             System.out.println("REPOSITORY - BEFORE SAVE:");
             System.out.println("  - Budget ID: " + budget.getId());
             System.out.println("  - Budget actualIncome: €" + budget.getActualIncome());
@@ -36,7 +35,6 @@ public class JpaBudgetRepository implements BudgetRepository {
 
             session.saveOrUpdate(budget);
 
-            // DEBUG: Dopo saveOrUpdate ma prima del commit
             System.out.println("REPOSITORY - AFTER saveOrUpdate, BEFORE commit:");
             System.out.println("  - Budget ID: " + budget.getId());
             System.out.println("  - Budget actualIncome: €" + budget.getActualIncome());
@@ -44,7 +42,6 @@ public class JpaBudgetRepository implements BudgetRepository {
 
             transaction.commit();
 
-            // DEBUG: Dopo il commit
             System.out.println("REPOSITORY - AFTER COMMIT:");
             System.out.println("  - Budget ID: " + budget.getId());
             System.out.println("  - Budget actualIncome: €" + budget.getActualIncome());
@@ -77,7 +74,6 @@ public class JpaBudgetRepository implements BudgetRepository {
                 System.out.println("REPOSITORY - Budget caricato con Period: " + budget.getPeriod().getName() +
                         " e Category: " + (budget.getCategory() != null ? budget.getCategory().getName() : "null"));
 
-                // DEBUG: Valori caricati dal database
                 System.out.println("REPOSITORY - findById - Valori caricati:");
                 System.out.println("  - actualIncome: €" + budget.getActualIncome());
                 System.out.println("  - actualExpenses: €" + budget.getActualExpenses());
@@ -94,7 +90,6 @@ public class JpaBudgetRepository implements BudgetRepository {
     @Override
     public List<Budget> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            // IMPORTANTE: Usa JOIN FETCH per caricare Period e Category insieme al Budget
             Query<Budget> query = session.createQuery(
                     "SELECT DISTINCT b FROM Budget b " +
                             "LEFT JOIN FETCH b.period " +
@@ -104,7 +99,6 @@ public class JpaBudgetRepository implements BudgetRepository {
             List<Budget> budgets = query.getResultList();
             System.out.println("REPOSITORY - Caricati " + budgets.size() + " budget con relazioni complete");
 
-            // DEBUG: Mostra i valori di tutti i budget caricati
             System.out.println("REPOSITORY - findAll - Budget caricati:");
             for (Budget budget : budgets) {
                 String categoryName = budget.getCategory() != null ? budget.getCategory().getName() : "Generale";

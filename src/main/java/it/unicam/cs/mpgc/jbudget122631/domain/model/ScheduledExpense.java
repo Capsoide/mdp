@@ -58,13 +58,11 @@ public class ScheduledExpense {
     @Column(nullable = false)
     private boolean active = true;
 
-    // Riferimento al movimento creato (se completato)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_movement_id")
     private Movement createdMovement;
 
-    // Costruttori
-    protected ScheduledExpense() {} // JPA
+    protected ScheduledExpense() {}
 
     public ScheduledExpense(String description, BigDecimal amount, LocalDate dueDate) {
         this.description = Objects.requireNonNull(description, "Descrizione richiesta");
@@ -78,7 +76,6 @@ public class ScheduledExpense {
         this.type = Objects.requireNonNull(type, "Tipo movimento richiesto");
     }
 
-    // Metodi business
     private BigDecimal validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Importo deve essere > 0");
@@ -185,7 +182,6 @@ public class ScheduledExpense {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters/Setters
     public Long getId() { return id; }
     public String getDescription() { return description; }
     public BigDecimal getAmount() { return amount; }
@@ -204,6 +200,11 @@ public class ScheduledExpense {
 
     public void setDescription(String description) {
         this.description = Objects.requireNonNull(description);
+        updateTimestamp();
+    }
+
+    public void setCreatedMovement(Movement createdMovement) {
+        this.createdMovement = createdMovement;
         updateTimestamp();
     }
 

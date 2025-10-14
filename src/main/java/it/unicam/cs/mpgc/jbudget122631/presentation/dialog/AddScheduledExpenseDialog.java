@@ -44,11 +44,9 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         setTitle("Nuova Spesa Programmata");
         setHeaderText("Inserisci i dettagli della spesa programmata");
 
-        // Bottoni
         ButtonType createButtonType = new ButtonType("Crea", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
 
-        // Dimensioni
         getDialogPane().setPrefWidth(500);
         getDialogPane().setPrefHeight(600);
     }
@@ -59,20 +57,18 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.setVgap(10);
         grid.setPadding(new Insets(20));
 
-        // AGGIUNGI QUESTE RIGHE PER GESTIRE LE COLONNE
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setMinWidth(120);  // Larghezza minima per le etichette
-        col1.setPrefWidth(120); // Larghezza preferita per le etichette
+        col1.setMinWidth(120);
+        col1.setPrefWidth(120);
 
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setHgrow(Priority.ALWAYS); // La seconda colonna si espande
+        col2.setHgrow(Priority.ALWAYS);
         col2.setMinWidth(250);
 
         grid.getColumnConstraints().addAll(col1, col2);
 
         int row = 0;
 
-        // Descrizione (obbligatorio)
         Label descriptionLabel = new Label("*Descrizione:");
         descriptionLabel.setStyle("-fx-font-weight: bold;");
         descriptionField = new TextField();
@@ -81,7 +77,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(descriptionLabel, 0, row);
         grid.add(descriptionField, 1, row++);
 
-        // Importo (obbligatorio)
         Label amountLabel = new Label("*Importo (€):");
         amountLabel.setStyle("-fx-font-weight: bold;");
         amountField = new TextField();
@@ -90,7 +85,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(amountLabel, 0, row);
         grid.add(amountField, 1, row++);
 
-        // Tipo movimento
         Label typeLabel = new Label("Tipo:");
         typeComboBox = new ComboBox<>(FXCollections.observableArrayList(MovementType.values()));
         typeComboBox.setValue(MovementType.EXPENSE);
@@ -108,7 +102,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(typeLabel, 0, row);
         grid.add(typeComboBox, 1, row++);
 
-        // Data scadenza (obbligatorio)
         Label dueDateLabel = new Label("*Data Scadenza:");
         dueDateLabel.setStyle("-fx-font-weight: bold;");
         dueDatePicker = new DatePicker(LocalDate.now().plusDays(1));
@@ -116,12 +109,10 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(dueDateLabel, 0, row);
         grid.add(dueDatePicker, 1, row++);
 
-        // Separatore ricorrenza
         Separator separator = new Separator();
         grid.add(separator, 0, row, 2, 1);
         row++;
 
-        // Tipo ricorrenza
         Label recurrenceLabel = new Label("Ricorrenza:");
         recurrenceTypeComboBox = new ComboBox<>(FXCollections.observableArrayList(RecurrenceType.values()));
         recurrenceTypeComboBox.setValue(RecurrenceType.NONE);
@@ -139,7 +130,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(recurrenceLabel, 0, row);
         grid.add(recurrenceTypeComboBox, 1, row++);
 
-        // Intervallo ricorrenza
         Label intervalLabel = new Label("Ogni (n):");
         recurrenceIntervalField = new TextField("1");
         recurrenceIntervalField.setPromptText("1");
@@ -153,7 +143,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(intervalLabel, 0, row);
         grid.add(intervalBox, 1, row++);
 
-        // Data fine ricorrenza
         Label endDateLabel = new Label("Fine Ricorrenza:");
         recurrenceEndDatePicker = new DatePicker();
         recurrenceEndDatePicker.setPromptText("Opzionale - lascia vuoto per illimitata");
@@ -161,7 +150,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(endDateLabel, 0, row);
         grid.add(recurrenceEndDatePicker, 1, row++);
 
-        // Categorie
         Label categoriesLabel = new Label("Categorie:");
         categoriesListView = new ListView<>();
         categoriesListView.setPrefHeight(80);
@@ -173,14 +161,12 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
                 categoriesListView.setItems(FXCollections.observableArrayList(categoryService.getAllCategories()));
             }
         } catch (Exception e) {
-            // Se il servizio categorie non è disponibile, lascia vuoto
             System.err.println("Servizio categorie non disponibile: " + e.getMessage());
         }
 
         grid.add(categoriesLabel, 0, row);
         grid.add(categoriesListView, 1, row++);
 
-        // Note
         Label notesLabel = new Label("Note:");
         notesArea = new TextArea();
         notesArea.setPrefRowCount(3);
@@ -189,19 +175,16 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         grid.add(notesLabel, 0, row);
         grid.add(notesArea, 1, row++);
 
-        // Info sui campi obbligatori
         Label requiredInfo = new Label("* Campi obbligatori");
         requiredInfo.setStyle("-fx-font-size: 10px; -fx-text-fill: red;");
         grid.add(requiredInfo, 0, row, 2, 1);
 
-        // Gestione visibilità campi ricorrenza
         setupRecurrenceVisibility();
 
         getDialogPane().setContent(grid);
     }
 
     private void setupRecurrenceVisibility() {
-        // Mostra/nasconde campi ricorrenza in base alla selezione
         recurrenceTypeComboBox.setOnAction(e -> {
             boolean isRecurring = recurrenceTypeComboBox.getValue() != RecurrenceType.NONE;
             recurrenceIntervalField.setDisable(!isRecurring);
@@ -213,13 +196,11 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
             }
         });
 
-        // Inizialmente disabilita i campi ricorrenza
         recurrenceIntervalField.setDisable(true);
         recurrenceEndDatePicker.setDisable(true);
     }
 
     private void setupValidation() {
-        // Disabilita il pulsante Crea se i campi obbligatori sono vuoti
         Button createButton = (Button) getDialogPane().lookupButton(
                 getDialogPane().getButtonTypes().stream()
                         .filter(buttonType -> buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE)
@@ -228,7 +209,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         );
 
         if (createButton != null) {
-            // Validazione in tempo reale
             createButton.disableProperty().bind(
                     descriptionField.textProperty().isEmpty()
                             .or(amountField.textProperty().isEmpty())
@@ -236,14 +216,12 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
             );
         }
 
-        // Validazione formato importo
         amountField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*\\.?\\d*")) {
                 amountField.setText(oldVal);
             }
         });
 
-        // Validazione formato intervallo ricorrenza
         recurrenceIntervalField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*")) {
                 recurrenceIntervalField.setText(oldVal);
@@ -266,7 +244,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
     }
 
     private ScheduledExpense createScheduledExpense() throws Exception {
-        // Validazione campi obbligatori
         String description = descriptionField.getText().trim();
         if (description.isEmpty()) {
             throw new IllegalArgumentException("Descrizione è obbligatoria");
@@ -292,11 +269,9 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
             throw new IllegalArgumentException("Data scadenza è obbligatoria");
         }
 
-        // Crea la spesa programmata
         MovementType type = typeComboBox.getValue();
         ScheduledExpense scheduledExpense = new ScheduledExpense(description, amount, type, dueDate);
 
-        // Imposta ricorrenza se specificata
         RecurrenceType recurrenceType = recurrenceTypeComboBox.getValue();
         if (recurrenceType != RecurrenceType.NONE) {
             scheduledExpense.setRecurrenceType(recurrenceType);
@@ -323,11 +298,9 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
             }
         }
 
-        // Aggiungi categorie selezionate
         Set<Category> selectedCategories = new HashSet<>(categoriesListView.getSelectionModel().getSelectedItems());
         selectedCategories.forEach(scheduledExpense::addCategory);
 
-        // Imposta note
         String notes = notesArea.getText().trim();
         if (!notes.isEmpty()) {
             scheduledExpense.setNotes(notes);
@@ -344,7 +317,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
         alert.showAndWait();
     }
 
-    // Metodo per precompilare il form (utile per la modifica)
     public void populateFields(ScheduledExpense expense) {
         if (expense == null) return;
 
@@ -364,7 +336,6 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
             notesArea.setText(expense.getNotes());
         }
 
-        // Seleziona le categorie
         if (categoriesListView.getItems() != null) {
             expense.getCategories().forEach(category -> {
                 int index = categoriesListView.getItems().indexOf(category);

@@ -30,15 +30,13 @@ public class JpaMovementRepository implements MovementRepository {
 
             System.out.println("REPOSITORY - Salvando movement con " + movement.getCategories().size() + " categorie");
 
-            // Salva o aggiorna il movimento
             session.saveOrUpdate(movement);
-            session.flush(); // Forza il salvataggio immediato
+            session.flush();
 
             transaction.commit();
 
             System.out.println("REPOSITORY - Movement salvato con ID: " + movement.getId());
 
-            // IMPORTANTE: Ricarica il movimento con le categorie dal database
             return findById(movement.getId()).orElse(movement);
 
         } catch (Exception e) {
@@ -51,7 +49,6 @@ public class JpaMovementRepository implements MovementRepository {
     @Override
     public Optional<Movement> findById(Long id) {
         try (Session session = sessionFactory.openSession()) {
-            // Carica anche le categorie in modo eager
             Query<Movement> query = session.createQuery(
                     "SELECT m FROM Movement m LEFT JOIN FETCH m.categories WHERE m.id = :id",
                     Movement.class);
@@ -72,7 +69,6 @@ public class JpaMovementRepository implements MovementRepository {
     @Override
     public List<Movement> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            // Usa LEFT JOIN FETCH per caricare le categorie in modo eager
             Query<Movement> query = session.createQuery(
                     "SELECT DISTINCT m FROM Movement m LEFT JOIN FETCH m.categories ORDER BY m.date DESC",
                     Movement.class);
@@ -100,10 +96,27 @@ public class JpaMovementRepository implements MovementRepository {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
+
+            // Prima trova il movimento
             Movement movement = session.get(Movement.class, id);
             if (movement != null) {
+                // Controlla se esiste una ScheduledExpense che ha creato questo movimento
+                Query<ScheduledExpense> query = session.createQuery(
+                        "FROM ScheduledExpense se WHERE se.createdMovement.id = :movementId",
+                        ScheduledExpense.class);
+                query.setParameter("movementId", id);
+                List<ScheduledExpense> scheduledExpenses = query.getResultList();
+
+                // Se esiste una spesa programmata collegata, rimuovi il riferimento
+                for (ScheduledExpense scheduledExpense : scheduledExpenses) {
+                    scheduledExpense.setCreatedMovement(null);
+                    session.update(scheduledExpense);
+                }
+
+                // Ora elimina il movimento
                 session.delete(movement);
             }
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();

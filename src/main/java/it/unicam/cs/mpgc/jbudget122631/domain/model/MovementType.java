@@ -1,4 +1,3 @@
-// MovementType.java
 package it.unicam.cs.mpgc.jbudget122631.domain.model;
 
 public enum MovementType {

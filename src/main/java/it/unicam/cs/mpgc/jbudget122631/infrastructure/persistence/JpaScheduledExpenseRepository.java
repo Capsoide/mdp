@@ -36,6 +36,19 @@ public class JpaScheduledExpenseRepository implements ScheduledExpenseRepository
     }
 
     @Override
+    public Optional<ScheduledExpense> findByCreatedMovement(Movement movement) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<ScheduledExpense> query = session.createQuery(
+                    "FROM ScheduledExpense se WHERE se.createdMovement = :movement",
+                    ScheduledExpense.class);
+            query.setParameter("movement", movement);
+            return query.uniqueResultOptional();
+        } catch (Exception e) {
+            throw new RuntimeException("Errore ricerca spesa programmata per movimento creato", e);
+        }
+    }
+
+    @Override
     public Optional<ScheduledExpense> findById(Long id) {
         try (Session session = sessionFactory.openSession()) {
             Query<ScheduledExpense> query = session.createQuery(

@@ -12,27 +12,22 @@ import java.util.Optional;
 
 public interface MovementService {
 
-    // CRUD operations
     MovementDTO createMovement(MovementDTO movementDTO);
     Optional<MovementDTO> getMovementById(Long id);
     List<MovementDTO> getAllMovements();
     MovementDTO updateMovement(Long id, MovementDTO movementDTO);
     void deleteMovement(Long id);
 
-    // Business operations
     List<MovementDTO> getMovementsByDateRange(LocalDate startDate, LocalDate endDate);
     List<MovementDTO> getMovementsByType(MovementType type);
     List<MovementDTO> getMovementsByCategory(Long categoryId);
     List<MovementDTO> getMovementsByPeriod(Long periodId);
 
-    // Statistics
     BigDecimal getTotalByTypeAndDateRange(MovementType type, LocalDate startDate, LocalDate endDate);
     BigDecimal getTotalByCategoryAndDateRange(Long categoryId, LocalDate startDate, LocalDate endDate);
 
-    // Search
     List<MovementDTO> searchMovements(String searchTerm);
 
-    // Pagination
     List<MovementDTO> getMovementsPaginated(int page, int size);
     long getTotalMovementsCount();
     Movement createMovement(Movement movement);

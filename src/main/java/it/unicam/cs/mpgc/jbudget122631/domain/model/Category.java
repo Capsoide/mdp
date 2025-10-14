@@ -26,8 +26,7 @@ public class Category {
     @Column(nullable = false)
     private boolean active = true;
 
-    // Costruttori
-    protected Category() {} // JPA
+    protected Category() {}
 
     public Category(String name) {
         this.name = Objects.requireNonNull(name, "Nome categoria richiesto");
@@ -38,7 +37,6 @@ public class Category {
         this.description = description;
     }
 
-    // Metodi business per gerarchia
     public void addChild(Category child) {
         Objects.requireNonNull(child, "Categoria figlio non può essere null");
         if (child.equals(this)) {
@@ -96,7 +94,6 @@ public class Category {
         return descendants;
     }
 
-    // Getters/Setters
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
@@ -104,7 +101,6 @@ public class Category {
     public Set<Category> getChildren() { return new HashSet<>(children); }
     public boolean isActive() { return active; }
 
-    // Metodo per testing - utilizzato solo nei test unitari
     public void setId(Long id) {
         this.id = id;
     }
@@ -127,12 +123,10 @@ public class Category {
         if (!(o instanceof Category)) return false;
         Category category = (Category) o;
 
-        // Se entrambi hanno un ID, confronta per ID
         if (this.id != null && category.id != null) {
             return Objects.equals(this.id, category.id);
         }
 
-        // Altrimenti confronta per nome e parent
         return Objects.equals(name, category.name) &&
                 Objects.equals(parent, category.parent);
     }
@@ -144,7 +138,6 @@ public class Category {
             return Objects.hash(id);
         }
 
-        // Altrimenti usa nome e parent
         return Objects.hash(name, parent);
     }
 

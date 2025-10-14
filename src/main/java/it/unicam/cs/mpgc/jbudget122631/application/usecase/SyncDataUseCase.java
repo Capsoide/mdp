@@ -12,18 +12,14 @@ public class SyncDataUseCase {
 
     public SyncResult execute() {
         try {
-            // Esporta dati locali
             String localData = syncService.exportLocalData();
 
-            // Sincronizza con il servizio remoto
             SyncResult result = syncService.synchronizeWithRemote(localData);
 
-            // Importa cambiamenti se presenti
             if (result.hasRemoteChanges()) {
                 syncService.importRemoteChanges(result.getRemoteData());
             }
 
-            // Aggiorna timestamp ultima sincronizzazione
             syncService.updateLastSyncTimestamp(LocalDateTime.now());
 
             return result;
@@ -33,7 +29,6 @@ public class SyncDataUseCase {
         }
     }
 
-    // Interfaccia per il servizio di sincronizzazione (estendibile)
     public interface SyncService {
         String exportLocalData();
         SyncResult synchronizeWithRemote(String localData);
@@ -41,7 +36,6 @@ public class SyncDataUseCase {
         void updateLastSyncTimestamp(LocalDateTime timestamp);
     }
 
-    // Risultato della sincronizzazione
     public static class SyncResult {
         private final boolean success;
         private final String message;
