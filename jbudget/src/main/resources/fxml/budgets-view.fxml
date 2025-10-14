@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- Header con statistiche -->
+    <HBox spacing="20" style="-fx-padding: 15; -fx-background-color: #f8f9fa;">
+        <VBox alignment="CENTER" style="-fx-background-color: #e3f2fd; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="Entrate Pianificate" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="totalPlannedIncomeLabel" text="€ 0,00" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1976d2;"/>
+        </VBox>
+
+        <VBox alignment="CENTER" style="-fx-background-color: #f3e5f5; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="Entrate Reali" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="totalActualIncomeLabel" text="€ 0,00" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #7b1fa2;"/>
+        </VBox>
+
+        <VBox alignment="CENTER" style="-fx-background-color: #e8f5e8; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="Varianza Totale" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="totalVarianceLabel" text="€ 0,00" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #388e3c;"/>
+        </VBox>
+
+        <VBox alignment="CENTER" style="-fx-background-color: #ffebee; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+            <Label text="Budget Sforati" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="overBudgetCountLabel" text="0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #d32f2f;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Filtri -->
+    <HBox spacing="10" style="-fx-padding: 10; -fx-background-color: #f5f5f5;">
+        <Label text="Filtri:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="periodFilter" promptText="Periodo" prefWidth="120"/>
+        <ComboBox fx:id="categoryFilter" promptText="Categoria" prefWidth="120"/>
+        <Button fx:id="filterButton" text="Applica"/>
+        <Button fx:id="clearFilterButton" text="Pulisci"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="addBudgetButton" text="Nuovo Budget" style="-fx-background-color: #4caf50; -fx-text-fill: white;"/>
+        <Button fx:id="refreshButton" text="Aggiorna"/>
+    </HBox>
+
+    <!-- Tabella Budget -->
+    <TableView fx:id="budgetsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="periodColumn" text="Periodo" prefWidth="120"/>
+            <TableColumn fx:id="categoryColumn" text="Categoria" prefWidth="120"/>
+            <TableColumn fx:id="plannedIncomeColumn" text="Entrate Piano" prefWidth="110"/>
+            <TableColumn fx:id="plannedExpensesColumn" text="Spese Piano" prefWidth="110"/>
+            <TableColumn fx:id="actualIncomeColumn" text="Entrate Reali" prefWidth="110"/>
+            <TableColumn fx:id="actualExpensesColumn" text="Spese Reali" prefWidth="110"/>
+            <TableColumn fx:id="varianceColumn" text="Varianza" prefWidth="100"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <!-- Footer con azioni -->
+    <HBox spacing="10" style="-fx-padding: 10;">
+        <Button fx:id="editBudgetButton" text="Modifica"/>
+        <Button fx:id="deleteBudgetButton" text="Elimina" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Separator orientation="VERTICAL"/>
+        <Label text="Azioni:"/>
+        <Button fx:id="updateRealValuesButton" text="Aggiorna Valori Reali"/>
+        <Button text="Esporta"/>
+    </HBox>
+
+</VBox>
