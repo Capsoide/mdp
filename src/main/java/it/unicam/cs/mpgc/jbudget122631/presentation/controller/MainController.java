@@ -246,9 +246,12 @@ public class MainController implements Initializable {
                 "Budget: Pianificazione per categoria\n" +
                 "Scadenzario: Spese programmate\n\n" +
                 "Universita' di Camerino\n" +
+                "Sviluppato da Nicola Capancioni\n" +
                 "Corso: Metodologie di Programmazione");
         alert.showAndWait();
     }
+
+
 
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
