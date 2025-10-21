@@ -87,7 +87,7 @@ public final class ApplicationConfig {
                     budgetSvc  // Passa il BudgetService per aggiornamento automatico
             );
 
-            System.out.println("INIT - MovementService inizializzato con aggiornamento budget automatico");
+            System.out.println("INIT - MovementService inizializzato");
         }
         return movementService;
     }
@@ -144,20 +144,20 @@ public final class ApplicationConfig {
             BudgetService bgService = getBudgetService();
 
             if (mvService != null && bgService != null) {
-                System.out.println("TEST - ✓ MovementService disponibile");
-                System.out.println("TEST - ✓ BudgetService disponibile");
-                System.out.println("TEST - ✓ Aggiornamento automatico PRONTO");
+                System.out.println("TEST -  MovementService disponibile");
+                System.out.println("TEST -  BudgetService disponibile");
+                System.out.println("TEST -  Aggiornamento automatico PRONTO");
 
 
                 if (mvService instanceof MovementServiceImpl) {
-                    System.out.println("TEST - ✓ MovementServiceImpl con aggiornamento budget configurato");
+                    System.out.println("TEST - MovementServiceImpl con aggiornamento budget configurato");
                 }
             } else {
-                System.out.println("TEST - ✗ Errore: Servizi non disponibili");
+                System.out.println("TEST - Errore: Servizi non disponibili");
             }
 
         } catch (Exception e) {
-            System.err.println("TEST - ✗ Errore test integrazione: " + e.getMessage());
+            System.err.println("TEST - Errore test integrazione: " + e.getMessage());
         }
     }
 

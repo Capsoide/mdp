@@ -38,9 +38,9 @@ public class Category {
     }
 
     public void addChild(Category child) {
-        Objects.requireNonNull(child, "Categoria figlio non può essere null");
+        Objects.requireNonNull(child, "Categoria figlio non puo' essere null");
         if (child.equals(this)) {
-            throw new IllegalArgumentException("Una categoria non può essere figlia di se stessa");
+            throw new IllegalArgumentException("Una categoria non puo' essere figlia di se stessa");
         }
         if (isDescendantOf(child)) {
             throw new IllegalArgumentException("Ciclo nella gerarchia non ammesso");

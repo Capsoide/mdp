@@ -246,12 +246,12 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
     private ScheduledExpense createScheduledExpense() throws Exception {
         String description = descriptionField.getText().trim();
         if (description.isEmpty()) {
-            throw new IllegalArgumentException("Descrizione è obbligatoria");
+            throw new IllegalArgumentException("Descrizione e' obbligatoria");
         }
 
         String amountText = amountField.getText().trim();
         if (amountText.isEmpty()) {
-            throw new IllegalArgumentException("Importo è obbligatorio");
+            throw new IllegalArgumentException("Importo e' obbligatorio");
         }
 
         BigDecimal amount;
@@ -266,7 +266,7 @@ public class AddScheduledExpenseDialog extends Dialog<ScheduledExpense> {
 
         LocalDate dueDate = dueDatePicker.getValue();
         if (dueDate == null) {
-            throw new IllegalArgumentException("Data scadenza è obbligatoria");
+            throw new IllegalArgumentException("Data scadenza e' obbligatoria");
         }
 
         MovementType type = typeComboBox.getValue();

@@ -181,7 +181,7 @@ public class CategoryServiceImpl implements CategoryService {
     private void validateUniqueNameInParent(String name, Category parent) {
         if (categoryRepository.existsByNameAndParent(name, parent)) {
             String parentInfo = parent != null ? "nella categoria '" + parent.getName() + "'" : "tra le categorie radice";
-            throw new IllegalArgumentException("Categoria '" + name + "' già esistente " + parentInfo);
+            throw new IllegalArgumentException("Categoria '" + name + "' gia' esistente " + parentInfo);
         }
     }
 

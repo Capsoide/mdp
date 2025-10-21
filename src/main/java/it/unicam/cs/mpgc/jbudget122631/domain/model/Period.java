@@ -26,7 +26,7 @@ public class Period {
 
     public Period(String name, LocalDate startDate, LocalDate endDate) {
         validateDates(startDate, endDate);
-        this.name = Objects.requireNonNull(name, "Nome periodo non può essere null");
+        this.name = Objects.requireNonNull(name, "Nome periodo non puo' essere null");
         this.startDate = startDate;
         this.endDate = endDate;
     }

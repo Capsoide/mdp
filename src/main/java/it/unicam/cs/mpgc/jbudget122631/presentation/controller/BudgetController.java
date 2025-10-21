@@ -599,7 +599,7 @@ public class BudgetController implements Initializable {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Conferma eliminazione");
         confirmation.setHeaderText("Eliminare il budget selezionato?");
-        confirmation.setContentText("Questa operazione non può essere annullata.");
+        confirmation.setContentText("Questa operazione non puo' essere annullata.");
 
         if (confirmation.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {

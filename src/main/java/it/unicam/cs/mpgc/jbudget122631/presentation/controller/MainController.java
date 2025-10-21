@@ -245,7 +245,7 @@ public class MainController implements Initializable {
                 "Movimenti: Gestione entrate e uscite\n" +
                 "Budget: Pianificazione per categoria\n" +
                 "Scadenzario: Spese programmate\n\n" +
-                "Università di Camerino\n" +
+                "Universita' di Camerino\n" +
                 "Corso: Metodologie di Programmazione");
         alert.showAndWait();
     }

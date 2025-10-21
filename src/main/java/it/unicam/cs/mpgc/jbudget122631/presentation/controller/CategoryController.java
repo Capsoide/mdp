@@ -301,7 +301,7 @@ public class CategoryController implements Initializable {
                 parentCategoryCombo.getValue() : null;
 
         if (name.isEmpty()) {
-            showError("Nome richiesto", "Il nome della categoria è obbligatorio");
+            showError("Nome richiesto", "Il nome della categoria e' obbligatorio");
             return;
         }
 
@@ -343,7 +343,7 @@ public class CategoryController implements Initializable {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Conferma eliminazione");
         confirmation.setHeaderText("Eliminare la categoria '" + selected.getName() + "'?");
-        confirmation.setContentText("Questa operazione non può essere annullata.");
+        confirmation.setContentText("Questa operazione non puo' essere annullata.");
 
         if (confirmation.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {

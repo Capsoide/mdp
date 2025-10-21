@@ -17,7 +17,7 @@ public class CreateBudgetUseCase {
         // Verifica che non esista già un budget per periodo/categoria
         if (budgetService.getBudgetByPeriodAndCategory(budgetDTO.getPeriodId(),
                 budgetDTO.getCategoryId()).isPresent()) {
-            throw new IllegalArgumentException("Budget già esistente per questo periodo/categoria");
+            throw new IllegalArgumentException("Budget gia' esistente per questo periodo/categoria");
         }
 
         return budgetService.createBudget(budgetDTO);

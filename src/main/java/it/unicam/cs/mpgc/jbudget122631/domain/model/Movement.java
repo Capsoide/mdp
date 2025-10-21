@@ -67,7 +67,7 @@ public class Movement {
     }
 
     public void addCategory(Category category) {
-        Objects.requireNonNull(category, "Categoria non può essere null");
+        Objects.requireNonNull(category, "Categoria non puo' essere null");
         categories.add(category);
         System.out.println("ENTITY - Categoria aggiunta: " + category.getName() + " (Total: " + categories.size() + ")");
     }

@@ -84,7 +84,7 @@ public class ScheduledExpense {
     }
 
     public void addCategory(Category category) {
-        Objects.requireNonNull(category, "Categoria non può essere null");
+        Objects.requireNonNull(category, "Categoria non puo' essere null");
         categories.add(category);
         updateTimestamp();
     }
@@ -144,7 +144,7 @@ public class ScheduledExpense {
 
     public Movement createMovement() {
         if (completed) {
-            throw new IllegalStateException("Spesa già completata");
+            throw new IllegalStateException("Spesa gia' completata");
         }
 
         Movement movement = new Movement(description, amount, type, LocalDate.now());

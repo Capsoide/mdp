@@ -128,7 +128,7 @@ public class MovementController implements Initializable {
                 if (empty || amount == null) {
                     setText(null);
                 } else {
-                    setText(String.format("€ %.2f", amount));
+                    setText(String.format("€%.2f", amount));
 
                     MovementDTO movement = getTableRow().getItem();
                     if (movement != null) {
@@ -280,7 +280,7 @@ public class MovementController implements Initializable {
                     }
 
                     notifyBudgetUpdate();
-                    showInfo("Movimento aggiunto", "Il movimento è stato aggiunto con successo.");
+                    showInfo("Movimento aggiunto", "Il movimento e' stato aggiunto con successo.");
 
                 } catch (Exception e) {
                     showError("Errore aggiunta movimento", e.getMessage());
@@ -319,7 +319,7 @@ public class MovementController implements Initializable {
                     }
 
                     notifyBudgetUpdate();
-                    showInfo("Movimento modificato", "Il movimento è stato modificato con successo.");
+                    showInfo("Movimento modificato", "Il movimento e' stato modificato con successo.");
                 } catch (Exception e) {
                     System.err.println("EDIT - Errore: " + e.getMessage());
                     showError("Errore modifica movimento", e.getMessage());
@@ -484,7 +484,7 @@ public class MovementController implements Initializable {
 
                     return result;
                 } catch (NumberFormatException e) {
-                    showError("Errore formato importo", "L'importo inserito non è valido.");
+                    showError("Errore formato importo", "L'importo inserito non e' valido.");
                     return null;
                 }
             }
@@ -551,7 +551,6 @@ public class MovementController implements Initializable {
             CategoryOption other = (CategoryOption) obj;
             return id.equals(other.id);
         }
-
 
         @Override
         public int hashCode() { return id.hashCode(); }
